@@ -1,0 +1,12 @@
+﻿<ResourceDictionary xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+                    xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml">
+
+    <Style x:Key="bgLoader" TargetType="Rectangle">
+        <Setter Property="Fill" Value="WhiteSmoke" />
+    </Style>
+
+    <Style x:Key="textLoader" TargetType="TextBlock">
+        <Setter Property="Foreground" Value="#FF111F58" />
+    </Style>
+
+</ResourceDictionary>

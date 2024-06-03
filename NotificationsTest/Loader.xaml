@@ -1,0 +1,40 @@
+﻿<Window x:Class="Notifier.Loader"
+        xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+        xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+        xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+        xmlns:local="clr-namespace:Notifier"
+        mc:Ignorable="d"
+        Title="Notifier" Height="220" Width="470" WindowStyle="None" AllowsTransparency="True" Background="Transparent"
+        WindowStartupLocation="CenterScreen" ShowInTaskbar="False" Topmost="True">
+
+    <Window.Resources>
+        <ResourceDictionary>
+            <ResourceDictionary.MergedDictionaries>
+                <ResourceDictionary Source="resourceDictionaries/ProgressBarDict.xaml"/>
+                <ResourceDictionary Source="resourceDictionaries/themes/LightTheme.xaml"/>
+            </ResourceDictionary.MergedDictionaries>
+        </ResourceDictionary>
+    </Window.Resources>
+
+    <Grid x:Name="MainGrid">
+        <ProgressBar Grid.Row="0" Height="145" Width="370" x:Name="PBar" Value="{Binding WorkerState}"
+            Minimum="0" Maximum="100" Template="{StaticResource ProgressBarPath}"></ProgressBar>
+        <Grid Width="390" Height="140" x:Name="UIWindow">
+            <Grid.RowDefinitions>
+                <RowDefinition Height="*"/>
+            </Grid.RowDefinitions>
+
+            <Rectangle Stroke="#FF353535" RadiusX="10" RadiusY="10"/>
+            <Rectangle Style="{DynamicResource bgLoader}" RadiusX="10" RadiusY="10" Margin="1"/>
+
+            <TextBlock HorizontalAlignment="Center" VerticalAlignment="Center" FontSize="28" Text="{DynamicResource m_LoaderTitle}" TextWrapping="Wrap" Margin="5,5,5,5" Style="{DynamicResource textLoader}"/>
+            <Button HorizontalAlignment="Right" VerticalAlignment="Top" x:Name="CloseBtn"
+                    Background="Transparent" BorderBrush="{x:Null}" Foreground="DarkRed" Content="❌" FontSize="18" />
+
+            <Grid.Effect>
+                <DropShadowEffect BlurRadius="50" ShadowDepth="0" Color="CornflowerBlue"/>
+            </Grid.Effect>
+        </Grid>
+    </Grid>
+</Window>

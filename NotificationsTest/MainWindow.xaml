@@ -1,0 +1,90 @@
+﻿<Window x:Class="Notifier.MainWindow"
+        xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+        xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+        xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+        xmlns:local="clr-namespace:Notifier"
+        xmlns:tb="http://www.hardcodet.net/taskbar"
+        mc:Ignorable="d"
+        Title="Notifier" Height="900" Width="1200" ResizeMode="NoResize" WindowStartupLocation="CenterScreen" WindowStyle="None">
+
+    <Window.Resources>
+        <ResourceDictionary>
+            <ResourceDictionary.MergedDictionaries>
+                <ResourceDictionary Source="resourceDictionaries/ButtonDict.xaml"/>
+            </ResourceDictionary.MergedDictionaries>
+        </ResourceDictionary>
+    </Window.Resources>
+    
+    <Grid>
+        <Grid.RowDefinitions>
+            <RowDefinition Height="0.05*"></RowDefinition>
+            <RowDefinition Height="*"></RowDefinition>
+        </Grid.RowDefinitions>
+        <Grid.ColumnDefinitions>
+            <ColumnDefinition Width="*"></ColumnDefinition>
+            <ColumnDefinition Width="0.7*"></ColumnDefinition>
+        </Grid.ColumnDefinitions>
+
+        <!-- Menu (0 row, 0,1 column) -->
+        <Button Grid.Row="0" Grid.Column="0"/>
+
+        <!-- Tasks (1 row, 0 column) -->
+
+        
+        <!-- Task manage (1 row, 1 column) -->
+
+        <Button x:Name="NotifyBtnFirst" Width="150px" Height="40px" Content="{DynamicResource m_ChangeTask}"
+                Grid.Row="0" Grid.Column="1" Style="{StaticResource btnDefault}"></Button>
+
+        <Button HorizontalAlignment="Right" VerticalAlignment="Top" x:Name="CloseBtn" Grid.Column="1"
+        Background="Transparent" BorderBrush="{x:Null}" Foreground="DarkRed" Content="❌" FontSize="18"/>
+
+        <ListBox Width="300px" HorizontalAlignment="Left"
+                    Grid.Row="1" x:Name="TasksList" SelectionMode="Single">
+            <ListBox.ItemTemplate>
+                <DataTemplate>
+                    <Border CornerRadius="6" BorderBrush="Gray" Background="LightGray" BorderThickness="2" Padding="5px">
+                        <StackPanel>
+                            <TextBlock Text="{Binding id}" Margin="2" FontWeight="Bold"></TextBlock>
+                            <TextBlock Text="{Binding label}" Margin="2"></TextBlock>
+                            <TextBlock Text="{Binding text}" Margin="2"></TextBlock>
+                        </StackPanel>
+                    </Border>
+                </DataTemplate>
+            </ListBox.ItemTemplate>
+        </ListBox>
+
+        <TextBox Grid.Row="1" Grid.Column="1" Width="200px" Height="20px" x:Name="TaskLabel" HorizontalAlignment="Left"
+         Margin="20,0,0,100"></TextBox>
+        <TextBox Grid.Row="1" Grid.Column="1" Width="200px" Height="100px" x:Name="TaskText" HorizontalAlignment="Left"
+                 Margin="20,60,0,0"></TextBox>
+        <Button Grid.Row="1" Grid.Column="1" Width="100px" Height="40px" x:Name="TaskAddBtn" HorizontalAlignment="Right"
+                Content="{DynamicResource m_AddTask}" Margin="0,0,50,0" Style="{StaticResource btnDefault}"></Button>
+        <Label Grid.Column="1" HorizontalAlignment="Left" Margin="281,139,0,0" 
+               Grid.Row="1" VerticalAlignment="Top" x:Name="InfoTask"/>
+
+        <tb:TaskbarIcon Visibility="Visible" ToolTipText="Notifier" x:Name="tbIcon" PopupActivation="RightClick">
+            <tb:TaskbarIcon.TrayPopup>
+                <Grid Width="180" Background="#FF110352">
+                    <Grid.RowDefinitions>
+                    <RowDefinition></RowDefinition>
+                    <RowDefinition></RowDefinition>
+                    <RowDefinition></RowDefinition>
+                    </Grid.RowDefinitions>
+                    <Button
+                        Grid.Row="0"
+                        x:Name="PopupTrayCloseBtn"
+                        Width="180"
+                        Height="40"
+                        Style="{StaticResource btPupupTray}"
+                        Content="{DynamicResource m_CloseApp}"
+                        HorizontalAlignment="Center"
+                        VerticalAlignment="Center" />
+
+                </Grid>
+            </tb:TaskbarIcon.TrayPopup>
+        </tb:TaskbarIcon>
+
+    </Grid>
+</Window>
