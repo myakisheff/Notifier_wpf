@@ -19,7 +19,7 @@
     
     <Grid Margin="5">
         <Grid.RowDefinitions>
-            <RowDefinition Height="0.05*"></RowDefinition>
+            <RowDefinition Height="0.08*"></RowDefinition>
             <RowDefinition Height="*"></RowDefinition>
         </Grid.RowDefinitions>
         <Grid.ColumnDefinitions>
@@ -37,7 +37,7 @@
                 Background="Transparent" BorderBrush="{x:Null}" Foreground="DarkRed" Content="❌" FontSize="18"/>
 
         <!-- Tasks (1 row, 0 column) -->
-        <local:LayoutListTasks x:Name="ListTasks" Grid.Row="1" Grid.Column="0" ScrollViewer.HorizontalScrollBarVisibility="Disabled">
+        <local:LayoutListTasks x:Name="ListTasks" Grid.Row="1" Grid.Column="0" ScrollViewer.HorizontalScrollBarVisibility="Disabled" Margin="5">
             <local:LayoutListTasks.ContextMenu>
                 <ContextMenu>
                     <MenuItem Header="Tile" Click="MenuItemTile_Click"/>
