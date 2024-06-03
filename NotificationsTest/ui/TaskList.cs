@@ -15,8 +15,8 @@ namespace Notifier.ui
                 co1.Add(new domain.Task
                 {
                     id = dr.id,
-                    label = dr.label,
-                    text = dr.text
+                    TaskTitle = dr.TaskTitle,
+                    TaskDescription = dr.TaskDescription
                 });
             }
             
@@ -28,7 +28,7 @@ namespace Notifier.ui
             if (label == "" || label == null || text == "" || text == null)
                 return false;
 
-            taskStorage.AddTask(new domain.Task(label, text));
+            taskStorage.AddTask(new domain.Task());
             return true;
         }
     }

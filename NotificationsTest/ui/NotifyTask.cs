@@ -9,8 +9,8 @@ namespace Notifier.ui
             new ToastContentBuilder()
                 .AddArgument("action", "viewConversation")
                 .AddArgument("conversationId", 9813)
-                .AddText(selectedTask.label)
-                .AddText(selectedTask.text)
+                .AddText(selectedTask.TaskTitle)
+                .AddText(selectedTask.TaskDescription)
                 .Show();
         }
 
@@ -24,8 +24,8 @@ namespace Notifier.ui
             new ToastContentBuilder()
                 .AddArgument("action", "viewConversation")
                 .AddArgument("conversationId", id)
-                .AddHeader(selectedTask.id.ToString(), selectedTask.label, "label")
-                .AddText(selectedTask.text)
+                .AddHeader(selectedTask.id.ToString(), selectedTask.TaskTitle, "label")
+                .AddText(selectedTask.TaskDescription)
 
                 // Buttons
                 .AddButton(new ToastButton()
