@@ -3,20 +3,21 @@
         xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
         xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
         xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
-        xmlns:local="clr-namespace:Notifier"
+        xmlns:local="clr-namespace:Notifier.ui"
         xmlns:tb="http://www.hardcodet.net/taskbar"
         mc:Ignorable="d"
-        Title="Notifier" Height="900" Width="1200" ResizeMode="NoResize" WindowStartupLocation="CenterScreen" WindowStyle="None">
+        Title="Notifier" Height="800" Width="1200" ResizeMode="NoResize" WindowStartupLocation="CenterScreen" WindowStyle="None">
 
     <Window.Resources>
         <ResourceDictionary>
             <ResourceDictionary.MergedDictionaries>
                 <ResourceDictionary Source="resourceDictionaries/ButtonDict.xaml"/>
+                <ResourceDictionary Source="resourceDictionaries/ListTasksDict.xaml"/>
             </ResourceDictionary.MergedDictionaries>
         </ResourceDictionary>
     </Window.Resources>
     
-    <Grid>
+    <Grid Margin="5">
         <Grid.RowDefinitions>
             <RowDefinition Height="0.05*"></RowDefinition>
             <RowDefinition Height="*"></RowDefinition>
@@ -27,33 +28,25 @@
         </Grid.ColumnDefinitions>
 
         <!-- Menu (0 row, 0,1 column) -->
-        <Button Grid.Row="0" Grid.Column="0"/>
+        <StackPanel Grid.Row="0" Grid.Column="0" Orientation="Horizontal" HorizontalAlignment="Center" Grid.ColumnSpan="2">
+            <Button x:Name="BtnSettings" Style="{StaticResource btMenu}" Content="{DynamicResource m_Settings}"/>
+            <Button x:Name="BtnNotify" Style="{StaticResource btMenu}" Content="Notify"/>
+        </StackPanel>
+        
+        <Button HorizontalAlignment="Right" VerticalAlignment="Top" x:Name="CloseBtn" Grid.Column="1"
+                Background="Transparent" BorderBrush="{x:Null}" Foreground="DarkRed" Content="❌" FontSize="18"/>
 
         <!-- Tasks (1 row, 0 column) -->
+        <local:LayoutListTasks x:Name="ListTasks" Grid.Row="1" Grid.Column="0" ScrollViewer.HorizontalScrollBarVisibility="Disabled">
+            <local:LayoutListTasks.ContextMenu>
+                <ContextMenu>
+                    <MenuItem Header="Tile" Click="MenuItemTile_Click"/>
+                    <MenuItem Header="List" Click="MenuItemList_Click"/>
+                </ContextMenu>
+            </local:LayoutListTasks.ContextMenu>
+        </local:LayoutListTasks>
 
-        
         <!-- Task manage (1 row, 1 column) -->
-
-        <Button x:Name="NotifyBtnFirst" Width="150px" Height="40px" Content="{DynamicResource m_ChangeTask}"
-                Grid.Row="0" Grid.Column="1" Style="{StaticResource btnDefault}"></Button>
-
-        <Button HorizontalAlignment="Right" VerticalAlignment="Top" x:Name="CloseBtn" Grid.Column="1"
-        Background="Transparent" BorderBrush="{x:Null}" Foreground="DarkRed" Content="❌" FontSize="18"/>
-
-        <ListBox Width="300px" HorizontalAlignment="Left"
-                    Grid.Row="1" x:Name="TasksList" SelectionMode="Single">
-            <ListBox.ItemTemplate>
-                <DataTemplate>
-                    <Border CornerRadius="6" BorderBrush="Gray" Background="LightGray" BorderThickness="2" Padding="5px">
-                        <StackPanel>
-                            <TextBlock Text="{Binding id}" Margin="2" FontWeight="Bold"></TextBlock>
-                            <TextBlock Text="{Binding label}" Margin="2"></TextBlock>
-                            <TextBlock Text="{Binding text}" Margin="2"></TextBlock>
-                        </StackPanel>
-                    </Border>
-                </DataTemplate>
-            </ListBox.ItemTemplate>
-        </ListBox>
 
         <TextBox Grid.Row="1" Grid.Column="1" Width="200px" Height="20px" x:Name="TaskLabel" HorizontalAlignment="Left"
          Margin="20,0,0,100"></TextBox>
@@ -77,6 +70,7 @@
                         x:Name="PopupTrayCloseBtn"
                         Width="180"
                         Height="40"
+                        FontSize="18"
                         Style="{StaticResource btPupupTray}"
                         Content="{DynamicResource m_CloseApp}"
                         HorizontalAlignment="Center"
