@@ -11,8 +11,6 @@ namespace Notifier
     {
         private int _workerState;
 
-        private MainWindow window = new();
-
         public event PropertyChangedEventHandler? PropertyChanged;
 
         public int WorkerState
@@ -38,8 +36,6 @@ namespace Notifier
 
             CloseBtn.Click += Loader_CloseBtn;
 
-            window.LoadData();
-
             StartProgressBar();
         }
 
@@ -54,6 +50,7 @@ namespace Notifier
 
         private void LoadMainWindow()
         {
+            MainWindow window = new();
             if(window.IsLoaded)
                 window.Show();
             Close();
@@ -69,7 +66,6 @@ namespace Notifier
 
         private void Loader_CloseBtn(object sender, RoutedEventArgs e)
         {
-            window.Close();
             Close();
         }
 
