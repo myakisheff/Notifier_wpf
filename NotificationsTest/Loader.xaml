@@ -12,7 +12,7 @@
         <ResourceDictionary>
             <ResourceDictionary.MergedDictionaries>
                 <ResourceDictionary Source="resourceDictionaries/ProgressBarDict.xaml"/>
-                <ResourceDictionary Source="resourceDictionaries/themes/LightTheme.xaml"/>
+                <ResourceDictionary Source="resourceDictionaries/themes/DarkTheme.xaml"/>
             </ResourceDictionary.MergedDictionaries>
         </ResourceDictionary>
     </Window.Resources>

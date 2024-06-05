@@ -1,4 +1,5 @@
 ﻿using Notifier.ui;
+using System.Drawing;
 using System.IO;
 using System.Windows;
 using System.Windows.Controls;
@@ -29,6 +30,7 @@ namespace Notifier
             MouseDown += MainWindow_MouseDown;
             CloseBtn.Click += CloseBtn_Click;
 
+            // temporary data
             var data = new[] { 
             new { TaskTitle = "Shop visit", TaskCreationDate ="11.11.2011", TaskDescription="Go to the shop", TaskTargetDate="15.11.2011" },
             new { TaskTitle = "Wosh", TaskCreationDate ="13.11.2011", TaskDescription="", TaskTargetDate="25.01.2012" },
@@ -41,6 +43,7 @@ namespace Notifier
 
         private void PopupTrayCloseBtn_Click(object sender, RoutedEventArgs e)
         {
+            tbIcon.TrayPopupResolved.IsOpen = false;
             Close();
         }
 

@@ -6,7 +6,8 @@
         xmlns:local="clr-namespace:Notifier.ui"
         xmlns:tb="http://www.hardcodet.net/taskbar"
         mc:Ignorable="d"
-        Title="Notifier" Height="800" Width="1200" ResizeMode="NoResize" WindowStartupLocation="CenterScreen" WindowStyle="None">
+        Background="#191723"
+        Title="Notifier" Height="800" Width="1200" ResizeMode="NoResize" WindowStartupLocation="CenterScreen" WindowStyle="None" BorderBrush="Black" BorderThickness="1">
 
     <Window.Resources>
         <ResourceDictionary>
@@ -16,8 +17,8 @@
             </ResourceDictionary.MergedDictionaries>
         </ResourceDictionary>
     </Window.Resources>
-    
-    <Grid Margin="5">
+
+    <Grid>
         <Grid.RowDefinitions>
             <RowDefinition Height="0.08*"></RowDefinition>
             <RowDefinition Height="*"></RowDefinition>
@@ -28,16 +29,19 @@
         </Grid.ColumnDefinitions>
 
         <!-- Menu (0 row, 0,1 column) -->
-        <StackPanel Grid.Row="0" Grid.Column="0" Orientation="Horizontal" HorizontalAlignment="Center" Grid.ColumnSpan="2">
-            <Button x:Name="BtnSettings" Style="{StaticResource btMenu}" Content="{DynamicResource m_Settings}"/>
-            <Button x:Name="BtnNotify" Style="{StaticResource btMenu}" Content="Notify"/>
-        </StackPanel>
-        
-        <Button HorizontalAlignment="Right" VerticalAlignment="Top" x:Name="CloseBtn" Grid.Column="1"
+        <Border Grid.Row="0" Grid.Column="0" Grid.ColumnSpan="2" Background="#120f17" BorderBrush="#2c2538" BorderThickness="1" CornerRadius="0,0,25,25">
+            <StackPanel Orientation="Horizontal" HorizontalAlignment="Center">
+                <Button x:Name="BtnSettings" Style="{StaticResource btMenu}" Content="{DynamicResource m_Settings}"/>
+                <Button x:Name="BtnNotify" Style="{StaticResource btMenu}" Content="Notify"/>
+            </StackPanel>
+        </Border>
+
+        <Button HorizontalAlignment="Right" VerticalAlignment="Top" x:Name="CloseBtn" Grid.Column="1" Margin="5"
                 Background="Transparent" BorderBrush="{x:Null}" Foreground="DarkRed" Content="❌" FontSize="18"/>
 
         <!-- Tasks (1 row, 0 column) -->
-        <local:LayoutListTasks x:Name="ListTasks" Grid.Row="1" Grid.Column="0" ScrollViewer.HorizontalScrollBarVisibility="Disabled" Margin="5">
+        <local:LayoutListTasks x:Name="ListTasks" Grid.Row="1" Grid.Column="0" Background="#372e47" BorderThickness="5" BorderBrush="#120f17"
+                               ScrollViewer.HorizontalScrollBarVisibility="Disabled" Margin="5">
             <local:LayoutListTasks.ContextMenu>
                 <ContextMenu>
                     <MenuItem Header="Tile" Click="MenuItemTile_Click"/>
@@ -57,13 +61,12 @@
         <Label Grid.Column="1" HorizontalAlignment="Left" Margin="281,139,0,0" 
                Grid.Row="1" VerticalAlignment="Top" x:Name="InfoTask"/>
 
+        <!-- Task Bar -->
         <tb:TaskbarIcon Visibility="Visible" ToolTipText="Notifier" x:Name="tbIcon" PopupActivation="RightClick">
             <tb:TaskbarIcon.TrayPopup>
                 <Grid Width="180" Background="#FF110352">
                     <Grid.RowDefinitions>
-                    <RowDefinition></RowDefinition>
-                    <RowDefinition></RowDefinition>
-                    <RowDefinition></RowDefinition>
+                        <RowDefinition/>
                     </Grid.RowDefinitions>
                     <Button
                         Grid.Row="0"
