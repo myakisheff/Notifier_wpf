@@ -40,7 +40,6 @@
                 Background="Transparent" BorderBrush="{x:Null}" Foreground="DarkRed" Content="❌" FontSize="18"/>
 
         <!-- Tasks (1 row, 0 column) -->
-
         <local:LayoutListTasks x:Name="ListTasks" Grid.Row="1" Grid.Column="0" Background="#372e47" BorderThickness="5" BorderBrush="#120f17"
                                ScrollViewer.HorizontalScrollBarVisibility="Disabled" Margin="5">
             <local:LayoutListTasks.ItemContainerStyle>
