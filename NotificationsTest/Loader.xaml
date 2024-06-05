@@ -19,7 +19,7 @@
 
     <Grid x:Name="MainGrid">
         <ProgressBar Grid.Row="0" Height="145" Width="370" x:Name="PBar" Value="{Binding WorkerState}"
-            Minimum="0" Maximum="100" Template="{StaticResource ProgressBarPath}"></ProgressBar>
+            Minimum="0" Maximum="100" Template="{StaticResource ProgressBarPath}"/>
         <Grid Width="390" Height="140" x:Name="UIWindow">
             <Grid.RowDefinitions>
                 <RowDefinition Height="*"/>
