@@ -39,6 +39,8 @@ namespace Notifier
             new { TaskTitle = "Сделать тесты в лмс", TaskCreationDate ="02.06.2024", TaskDescription="Сделать тесты по истории и по Защите информации Сделать тесты по истории и по Защите информации Сделать тесты по истории и по Защите информации Сделать тесты по истории и по Защите информации", TaskTargetDate="05.06.2024" }};
 
             ListTasks.ItemsSource = data;
+
+            UpdatePreviewData();
         }
 
         private void PopupTrayCloseBtn_Click(object sender, RoutedEventArgs e)
@@ -94,9 +96,11 @@ namespace Notifier
             // TasksList.ItemsSource = taskListUI.updateTaskList();
         }
 
-        public void LoadData()
+        public void UpdatePreviewData()
         {
+            var previewData = new { TaskTitle = "Preview", TaskCreationDate = DateTime.Now.ToShortDateString(), TaskDescription = "Description preview", TaskTargetDate = DateTime.Now.AddDays(1).ToShortDateString() };
 
+            TaskPreview.DataContext = previewData;
         }
 
         private void MenuItemTile_Click(object sender, RoutedEventArgs e)
