@@ -15,7 +15,7 @@
                         CornerRadius="10"
                         BorderBrush="#000"
                         BorderThickness="2"
-                        Background="#fff"
+                        Background="#FFC1C1C1"
                         >
                         <ScrollViewer x:Name="PART_ContentHost"
                             Focusable="false"

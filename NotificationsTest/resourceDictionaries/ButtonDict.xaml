@@ -184,7 +184,53 @@
                 </ControlTemplate>
             </Setter.Value>
         </Setter>
+    </Style>
 
+    <Style TargetType="{x:Type Button}" BasedOn="{x:Null}" x:Key="btTaskAdd">
+        <Setter Property="Foreground" Value="#FFD5D6D6" />
+        <Setter Property="BorderBrush" Value="#FF0B9FD0"/>
+        <Setter Property="BorderThickness" Value="2"/>
+        <Setter Property="Background" Value="#FF4586C3"/>
+        <Setter Property="Template">
+            <Setter.Value>
+                <ControlTemplate TargetType="{x:Type Button}">
+                    <ControlTemplate.Resources>
+                        <Storyboard x:Key="HoverOn">
+                            <ColorAnimation Duration="0:0:0.5" Storyboard.TargetName="content" Storyboard.TargetProperty="(TextBlock.Foreground).(SolidColorBrush.Color)"
+                                        To="White"/>
+                            <DoubleAnimation Duration="0:0:0.4" Storyboard.TargetName="hover" Storyboard.TargetProperty="(FrameworkElement.Opacity)"
+                                         To="1"/>
+                        </Storyboard>
+                        <Storyboard x:Key="HoverOff">
+                            <ColorAnimation Duration="0:0:0.5" Storyboard.TargetName="content" Storyboard.TargetProperty="(TextBlock.Foreground).(SolidColorBrush.Color)"
+                                        To="#FFD5D6D6"/>
+                            <DoubleAnimation Duration="0:0:0.4" Storyboard.TargetName="hover" Storyboard.TargetProperty="(FrameworkElement.Opacity)"
+                                         To="0"/>
+                        </Storyboard>
+                    </ControlTemplate.Resources>
+                    <Border x:Name="bg" CornerRadius="15" BorderBrush="{TemplateBinding BorderBrush}" BorderThickness="{TemplateBinding BorderThickness}" Background="{TemplateBinding Background}">
+                        <Grid>
+                            <Border x:Name="hover" CornerRadius="{Binding Path=CornerRadius, ElementName=bg}" Opacity="0" BorderThickness="3" Background="#FF5D8CB9"/>
+                            <ContentPresenter x:Name="content" RecognizesAccessKey="True" Margin="{TemplateBinding Padding}" SnapsToDevicePixels="{TemplateBinding SnapsToDevicePixels}" 
+                              HorizontalAlignment="{TemplateBinding HorizontalContentAlignment}" VerticalAlignment="{TemplateBinding VerticalContentAlignment}"/>
+                        </Grid>
+                    </Border>
+                    <ControlTemplate.Triggers>
+                        <Trigger Property="IsMouseOver" Value="True">
+                            <Trigger.EnterActions>
+                                <BeginStoryboard Storyboard="{StaticResource HoverOn}"/>
+                            </Trigger.EnterActions>
+                            <Trigger.ExitActions>
+                                <BeginStoryboard Storyboard="{StaticResource HoverOff}"/>
+                            </Trigger.ExitActions>
+                        </Trigger>
+                        <Trigger Property="IsPressed" Value="True">
+                            <Setter Property="Background" Value="#FF73B4F1"/>
+                        </Trigger>
+                    </ControlTemplate.Triggers>
+                </ControlTemplate>
+            </Setter.Value>
+        </Setter>
     </Style>
 
 </ResourceDictionary>

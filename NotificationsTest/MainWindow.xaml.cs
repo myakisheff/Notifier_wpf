@@ -20,12 +20,14 @@ namespace Notifier
             InitializeComponent();
 
             tbIcon.TrayLeftMouseDown += TbIcon_TrayLeftMouseDown;
-            tbIcon.Icon = new System.Drawing.Icon(Directory.GetParent(Environment.CurrentDirectory)?.Parent?.Parent?.FullName + "\\NotifyAppIcon.ico");
+            tbIcon.Icon = new Icon(Directory.GetParent(Environment.CurrentDirectory)?.Parent?.Parent?.FullName + "\\NotifyAppIcon.ico");
             PopupTrayCloseBtn.Click += PopupTrayCloseBtn_Click;
 
             BtnNotify.Click += NotifyBtnFirst_Click;
             TaskAddBtn.Click += TaskAddBtn_Click;
             ListTasks.SelectionChanged += TasksList_SelectionChanged;
+            TaskTitle.TextChanged += Input_TextChanged;
+            TaskText.TextChanged += Input_TextChanged;
 
             MouseDown += MainWindow_MouseDown;
             CloseBtn.Click += CloseBtn_Click;
@@ -43,6 +45,69 @@ namespace Notifier
             UpdatePreviewData();
         }
 
+        // Menu section
+        private void NotifyBtnFirst_Click(object sender, RoutedEventArgs e)
+        {
+            NotifyTask.ButtonsNotify(selectedTask);
+        }
+        private void CloseBtn_Click(object sender, RoutedEventArgs e)
+        {
+            Hide();
+        }
+
+        // Task add section
+        private void Input_TextChanged(object sender, TextChangedEventArgs e)
+        {
+            if (((TextBox)sender).Name == "TaskTitle")
+                cntTaskTitle.Content = ((TextBox)sender).Text.Length.ToString() + "/" + ((TextBox)sender).MaxLength.ToString();
+            else if (((TextBox)sender).Name == "TaskText")
+                cntTaskDesc.Content = ((TextBox)sender).Text.Length.ToString() + "/" + ((TextBox)sender).MaxLength.ToString();
+
+            UpdatePreviewData();
+        }
+
+        public void UpdatePreviewData()
+        {
+            var previewData = new { TaskTitle = TaskTitle.Text, TaskCreationDate = DateTime.Now.ToShortDateString(), TaskDescription = TaskText.Text, TaskTargetDate = DateTime.Now.AddDays(1).ToShortDateString() };
+
+            TaskPreview.DataContext = previewData;
+        }
+        private void TaskAddBtn_Click(object sender, RoutedEventArgs e)
+        {
+            if (!taskListUI.AddNewTask(TaskTitle.Text, TaskText.Text))
+            {
+                InfoTask.Content = "Bad params!";
+            }
+            else
+            {
+                InfoTask.Content = "Successful!";
+                UpdateTaskList();
+            }
+        }
+
+        // Task List section
+
+        private void MenuItemTile_Click(object sender, RoutedEventArgs e)
+        {
+            ListTasks.layout = Layout.Tile;
+        }
+
+        private void MenuItemList_Click(object sender, RoutedEventArgs e)
+        {
+            ListTasks.layout = Layout.List;
+        }
+
+        private void UpdateTaskList()
+        {
+            // TasksList.ItemsSource = taskListUI.updateTaskList();
+        }
+        private void TasksList_SelectionChanged(object sender, SelectionChangedEventArgs e)
+        {
+            var item = (ListBox)sender;
+            selectedTask = (domain.Task)item.SelectedItem;
+        }
+
+        // not visable section
         private void PopupTrayCloseBtn_Click(object sender, RoutedEventArgs e)
         {
             tbIcon.TrayPopupResolved.IsOpen = false;
@@ -54,63 +119,12 @@ namespace Notifier
             Show();
         }
 
-        private void CloseBtn_Click(object sender, RoutedEventArgs e)
-        {
-            Hide();
-        }
-
         private void MainWindow_MouseDown(object sender, MouseButtonEventArgs e)
         {
             if (Mouse.LeftButton == MouseButtonState.Pressed)
             {
                 DragMove();
             }
-        }
-
-        private void TasksList_SelectionChanged(object sender, SelectionChangedEventArgs e)
-        {
-            var item = (ListBox)sender;
-            selectedTask = (domain.Task)item.SelectedItem;
-        }
-
-        private void TaskAddBtn_Click(object sender, RoutedEventArgs e)
-        {
-            if(!taskListUI.AddNewTask(TaskLabel.Text, TaskText.Text))
-            {
-                InfoTask.Content = "Bad params!";
-            }
-            else
-            {
-                InfoTask.Content = "Successful!";
-                UpdateTaskList();
-            }
-        }
-
-        private void NotifyBtnFirst_Click(object sender, RoutedEventArgs e)
-        {
-            NotifyTask.ButtonsNotify(selectedTask);
-        }
-
-        private void UpdateTaskList()
-        {
-            // TasksList.ItemsSource = taskListUI.updateTaskList();
-        }
-
-        public void UpdatePreviewData()
-        {
-            var previewData = new { TaskTitle = "Preview", TaskCreationDate = DateTime.Now.ToShortDateString(), TaskDescription = "Description preview", TaskTargetDate = DateTime.Now.AddDays(1).ToShortDateString() };
-
-            TaskPreview.DataContext = previewData;
-        }
-
-        private void MenuItemTile_Click(object sender, RoutedEventArgs e)
-        {
-            ListTasks.layout = Layout.Tile;
-        }
-
-        private void MenuItemList_Click(object sender, RoutedEventArgs e)
-        {
-            ListTasks.layout = Layout.List;
         }
     }
 }
