@@ -4,6 +4,7 @@ using System.IO;
 using System.Windows;
 using System.Windows.Controls;
 using System.Windows.Input;
+using System.Windows.Media;
 
 namespace Notifier
 {
@@ -28,6 +29,7 @@ namespace Notifier
             ListTasks.SelectionChanged += TasksList_SelectionChanged;
             TaskTitle.TextChanged += Input_TextChanged;
             TaskText.TextChanged += Input_TextChanged;
+            SwitchTaskBtn.Click += SwitchTaskBtn_Click;
 
             MouseDown += MainWindow_MouseDown;
             CloseBtn.Click += CloseBtn_Click;
@@ -56,31 +58,69 @@ namespace Notifier
         }
 
         // Task add section
+        private void SwitchTaskBtn_Click(object sender, RoutedEventArgs e)
+        {
+            if(TaskTitleDescPanel.Visibility == Visibility.Visible)
+            {
+                TaskTitleDescPanel.Visibility = Visibility.Collapsed;
+                TaskTargetDatesPanel.Visibility = Visibility.Visible;
+            }
+            else
+            {
+                TaskTitleDescPanel.Visibility = Visibility.Visible;
+                TaskTargetDatesPanel.Visibility = Visibility.Collapsed;
+            }
+        }
+
+        private void OnTextBoxTextChanged(object sender, TextChangedEventArgs e)
+        {
+            if (sender is TextBox box)
+            {
+                if (string.IsNullOrEmpty(box.Text))
+                    box.Background = (ImageBrush)FindResource("watermarkTime");
+                else
+                    box.Background = new SolidColorBrush(Colors.White);
+            }
+        }
+
         private void Input_TextChanged(object sender, TextChangedEventArgs e)
         {
+            InfoTask.Visibility = Visibility.Hidden;
+
+            int txtLength = ((TextBox)sender).Text.Length;
+            int txtMaxLength = ((TextBox)sender).MaxLength;
+            string labelText = "";
+
+            if (txtLength != 0)
+                labelText = txtLength.ToString() + "/" + txtMaxLength.ToString();
+
             if (((TextBox)sender).Name == "TaskTitle")
-                cntTaskTitle.Content = ((TextBox)sender).Text.Length.ToString() + "/" + ((TextBox)sender).MaxLength.ToString();
+                cntTaskTitle.Content = labelText;
             else if (((TextBox)sender).Name == "TaskText")
-                cntTaskDesc.Content = ((TextBox)sender).Text.Length.ToString() + "/" + ((TextBox)sender).MaxLength.ToString();
+                cntTaskDesc.Content = labelText;
 
             UpdatePreviewData();
         }
 
         public void UpdatePreviewData()
         {
-            var previewData = new { TaskTitle = TaskTitle.Text, TaskCreationDate = DateTime.Now.ToShortDateString(), TaskDescription = TaskText.Text, TaskTargetDate = DateTime.Now.AddDays(1).ToShortDateString() };
+            var previewData = new { TaskTitle = TaskTitle.Text, TaskCreationDate = DateTime.Now.ToShortDateString(), TaskDescription = TaskText.Text, TaskTargetDate = DateTime.Now.AddDays(1).ToString() };
 
             TaskPreview.DataContext = previewData;
         }
         private void TaskAddBtn_Click(object sender, RoutedEventArgs e)
         {
+            InfoTask.Visibility = Visibility.Visible;
+            var bc = new BrushConverter();
             if (!taskListUI.AddNewTask(TaskTitle.Text, TaskText.Text))
             {
-                InfoTask.Content = "Bad params!";
+                InfoTask.Content = (string)Application.Current.FindResource("m_TaskCreationWrong");
+                InfoTask.Foreground = (System.Windows.Media.Brush?)bc.ConvertFrom("#b91316");
             }
             else
             {
-                InfoTask.Content = "Successful!";
+                InfoTask.Content = (string)Application.Current.FindResource("m_TaskCreationSuccess");
+                InfoTask.Foreground = (System.Windows.Media.Brush?)bc.ConvertFrom("#10790e");
                 UpdateTaskList();
             }
         }

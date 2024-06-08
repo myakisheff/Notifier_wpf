@@ -23,12 +23,12 @@
     <ControlTemplate x:Key="TaskTileTemplate" TargetType="Control">
         <Border Style="{StaticResource TaskTile}" Width="335" Padding="10">
             <StackPanel Orientation="Vertical" Height="100" HorizontalAlignment="Center">
-                <StackPanel Orientation="Horizontal" Height="24">
+                <StackPanel Orientation="Horizontal" Height="28">
                     <TextBlock Text="{Binding TaskTitle}" Width="220" Style="{StaticResource TaskText}" FontWeight="Bold" FontSize="20"/>
                     <TextBlock Text="{Binding TaskCreationDate}" Width="80" TextAlignment="Right" VerticalAlignment="Center" Style="{StaticResource TaskText}" FontSize="14"/>
                 </StackPanel>
-                <TextBlock Text="{Binding TaskDescription}" Height="53" Margin="0,0,0,3" Style="{StaticResource TaskText}" FontSize="14" TextWrapping="Wrap" Padding="0,2,0,0" TextTrimming="WordEllipsis"/>
-                <TextBlock Text="{Binding TaskTargetDate}" Height="20" HorizontalAlignment="Right" Style="{StaticResource TaskText}" FontSize="14"/>
+                <TextBlock Text="{Binding TaskDescription}" Height="50" Margin="0,0,0,3" Style="{StaticResource TaskText}" FontSize="14" TextWrapping="Wrap" Padding="0,2,0,0" TextTrimming="WordEllipsis"/>
+                <TextBlock Text="{Binding TaskTargetDate}" Height="19" HorizontalAlignment="Right" Style="{StaticResource TaskText}" FontSize="14"/>
             </StackPanel>
         </Border>
     </ControlTemplate>

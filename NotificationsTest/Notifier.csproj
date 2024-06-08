@@ -11,7 +11,12 @@
   </PropertyGroup>
 
   <ItemGroup>
-    <Content Include="NotifyAppIcon.ico" />
+    <None Remove="assets\cursors\cursor.cur" />
+    <None Remove="assets\watermarks\textboxtime.png" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <Resource Include="NotifyAppIcon.ico" />
   </ItemGroup>
 
   <ItemGroup>
@@ -21,6 +26,15 @@
 
   <ItemGroup>
     <Folder Include="domain\Loader\" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <Resource Include="assets\cursors\cursor.cur">
+      <CopyToOutputDirectory>Never</CopyToOutputDirectory>
+    </Resource>
+    <Resource Include="assets\watermarks\textboxtime.png">
+      <CopyToOutputDirectory>Never</CopyToOutputDirectory>
+    </Resource>
   </ItemGroup>
 
   <ItemGroup>

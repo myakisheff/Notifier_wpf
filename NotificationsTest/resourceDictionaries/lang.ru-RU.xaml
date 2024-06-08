@@ -17,4 +17,8 @@
     <v:String x:Key="m_TaskCreationSuccess">Успешно</v:String>
     <v:String x:Key="m_TaskCreationWrong">Ошибка</v:String>
     <v:String x:Key="m_AddTask">Добавить задачу</v:String>
+    <v:String x:Key="m_AddDateTask">Добавить дату</v:String>
+    <v:String x:Key="m_DelDateTask">Удалить дату</v:String>
+    <v:String x:Key="m_AddDateTimeTaskLabel">Время</v:String>
+    
 </ResourceDictionary>
