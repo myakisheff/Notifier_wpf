@@ -3,15 +3,19 @@
                     xmlns:v="clr-namespace:System;assembly=mscorlib">
 
     <v:String x:Key="m_LoaderTitle">Greetings!</v:String>
-    <v:String x:Key="m_AddTask">Add task</v:String>
     <v:String x:Key="m_ChangeTask">Change task</v:String>
     <v:String x:Key="m_DeleteTask">Delete Task</v:String>
     <v:String x:Key="m_Settings">Settings</v:String>
     <v:String x:Key="m_ChangeTheme">Change theme</v:String>
     <v:String x:Key="m_OffNotify">Off notify</v:String>
     <v:String x:Key="m_LaterNotify">Later</v:String>
-    <v:String x:Key="m_ErrorAddTask">Task should have a title</v:String>
-    <v:String x:Key="m_SuccessAddTask">Task successfuly added</v:String>
     <v:String x:Key="m_CloseApp">Exit</v:String>
+    
+     <!-- Task add section -->
+    <v:String x:Key="m_TaskCreationTitle">Title</v:String>
+    <v:String x:Key="m_TaskCreationDescription">Description</v:String>
+    <v:String x:Key="m_TaskCreationSuccess">Success</v:String>
+    <v:String x:Key="m_TaskCreationWrong">Wrong</v:String>
+    <v:String x:Key="m_AddTask">Add task</v:String>
 
 </ResourceDictionary>
