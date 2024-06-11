@@ -79,11 +79,25 @@
 
                 <StackPanel x:Name="TaskTargetDatesPanel" Visibility="Visible" Width="300">
                     <DockPanel Width="300" Margin="0,0,0,10">
-                        <DatePicker x:Name="TaskTargetDate" Width="130" Height="30" FontSize="14" DockPanel.Dock="Left"/>
-                        <TextBox x:Name="TaskTargetTime" Width="130" Height="30" VerticalContentAlignment="Center" FontSize="22" HorizontalAlignment="Right" 
-                                 DockPanel.Dock="Right" TextChanged="OnTextBoxTextChanged" Background="{StaticResource watermarkTime}"/>
+                        <DatePicker x:Name="TaskTargetDate" Width="130" Height="35" FontSize="16" DockPanel.Dock="Left"/>
+                        <StackPanel Orientation="Horizontal" HorizontalAlignment="Right">
+                            <StackPanel Margin="0,0,5,0">
+                                <Button x:Name="HoursDownBtn" Style="{StaticResource btTimeManage}" Content="ᐱ"/>
+                                <Button x:Name="HoursUpBtn" Style="{StaticResource btTimeManage}" Content="ᐯ"/>
+                            </StackPanel>
+                            <TextBox x:Name="TaskTargetTimeHours" Background="{StaticResource watermarkTime}" Width="40" Height="35" VerticalContentAlignment="Center"
+                                     TextChanged="OnTextBoxTextChanged" HorizontalContentAlignment="Center" BorderThickness="0" FontSize="22" 
+                                     MaxLength="2" PreviewTextInput="TaskTargetTime_PreviewTextInput"/>
+                            <TextBox x:Name="TaskTargetTimeMinutes" Width="40" Height="35" VerticalContentAlignment="Center" FontSize="22" MaxLength="2"
+                                     TextChanged="OnTextBoxTextChanged" Background="{StaticResource watermarkTime}" HorizontalContentAlignment="Center" 
+                                     BorderThickness="1,0,0,0" PreviewTextInput="TaskTargetTime_PreviewTextInput"/>
+                            <StackPanel Margin="5,0,5,0">
+                                <Button x:Name="MinutesDownBtn" Style="{StaticResource btTimeManage}" Content="ᐱ"/>
+                                <Button x:Name="MinutesUpBtn" Style="{StaticResource btTimeManage}" Content="ᐯ"/>
+                            </StackPanel>
+                        </StackPanel>
                     </DockPanel>
-                    <DockPanel Width="300">
+                    <DockPanel Width="300" Margin="0,0,0,15">
                         <Button x:Name="TaskTimeSettings" DockPanel.Dock="Left" Style="{StaticResource btSettings}"></Button>
                         <WrapPanel Height="70" HorizontalAlignment="Right" Margin="0,0,10,0">
                             <Button Height="25" Width="60" Margin="5" Content="88:88" FontSize="16" HorizontalAlignment="Center"/>

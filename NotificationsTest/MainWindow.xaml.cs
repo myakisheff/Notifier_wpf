@@ -32,6 +32,15 @@ namespace Notifier
             SwitchTaskBtn.Click += SwitchTaskBtn_Click;
             TaskTargetDateAddBtn.Click += TaskTargetDateAddBtn_Click;
 
+            TaskTargetTimeHours.CommandBindings.Add(new CommandBinding(ApplicationCommands.Paste, OnPasteCommand));
+            TaskTargetTimeMinutes.CommandBindings.Add(new CommandBinding(ApplicationCommands.Paste, OnPasteCommand));
+
+            TaskTargetTimeHours.LostFocus += TaskTargetTime_LostFocus;
+            TaskTargetTimeMinutes.LostFocus += TaskTargetTime_LostFocus;
+
+            TaskTargetTimeHours.TextChanged += TaskTargetTimeHours_TextChanged;
+            TaskTargetTimeMinutes.TextChanged += TaskTargetTimeMinutes_TextChanged;
+
             MouseDown += MainWindow_MouseDown;
             CloseBtn.Click += CloseBtn_Click;
 
@@ -71,6 +80,19 @@ namespace Notifier
                 TaskTitleDescPanel.Visibility = Visibility.Visible;
                 TaskTargetDatesPanel.Visibility = Visibility.Collapsed;
             }
+        }
+
+        private void TaskTargetTimeHours_TextChanged(object sender, TextChangedEventArgs e)
+        {
+            if(sender is TextBox box)
+            {
+                // check 
+            }
+        }
+
+        private void TaskTargetTimeMinutes_TextChanged(object sender, TextChangedEventArgs e)
+        {
+            throw new NotImplementedException();
         }
 
         private void TaskTargetDateAddBtn_Click(object sender, RoutedEventArgs e)
@@ -171,6 +193,28 @@ namespace Notifier
             {
                 DragMove();
             }
+        }
+
+        private void TaskTargetTime_PreviewTextInput(object sender, TextCompositionEventArgs e)
+        {
+            if (!char.IsDigit(e.Text, 0))
+            {
+                e.Handled = true;
+            }
+        }
+
+        private void TaskTargetTime_LostFocus(object sender, RoutedEventArgs e)
+        {
+            if (sender is TextBox box)
+            {
+                if (box.Text.Length == 1)
+                    box.Text = "0" + box.Text;
+            }
+        }
+
+        public void OnPasteCommand(object sender, ExecutedRoutedEventArgs e)
+        {
+            // Do nothing (for restricting paste)
         }
     }
 }
