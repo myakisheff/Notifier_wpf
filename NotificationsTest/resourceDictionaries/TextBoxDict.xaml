@@ -38,6 +38,6 @@
         </Setter>
     </Style>
 
-    <ImageBrush x:Key="watermarkTime" ImageSource="/assets/watermarks/textboxtime.png" AlignmentX="Left" Stretch="Fill"/>
+    <ImageBrush x:Key="watermarkTime" ImageSource="/assets/watermarks/textboxtime.png" AlignmentX="Left" Stretch="UniformToFill"/>
     
 </ResourceDictionary>

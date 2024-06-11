@@ -78,14 +78,28 @@
                 </StackPanel>
 
                 <StackPanel x:Name="TaskTargetDatesPanel" Visibility="Visible" Width="300">
-                    <ListBox x:Name="TaskTargetDatesList" Width="300" Height="100" HorizontalContentAlignment="Center" Margin="0,0,0,10"/>
-                    <Button x:Name="TaskTargetDateDelBtn" Width="150" Height="30" Style="{StaticResource btTaskDateDelete}" FontSize="18" Margin="0,0,5,10"
-                             Content="{DynamicResource m_DelDateTask}" HorizontalAlignment="Right" Visibility="Hidden"/>
-                    <DatePicker x:Name="TaskTargetDate" Width="290" Height="30" VerticalContentAlignment="Center" FontSize="14" Margin="0,0,0,5"/>
-                    <Label x:Name="TaskTargetTimeLabel" Content="{DynamicResource m_AddDateTimeTaskLabel}" Foreground="WhiteSmoke" FontSize="22"/>
-                    <TextBox x:Name="TaskTargetTime" Width="290" Height="30" VerticalContentAlignment="Center" FontSize="22" Margin="0,0,0,15" TextChanged="OnTextBoxTextChanged" Background="{StaticResource watermarkTime}"/>
+                    <DockPanel Width="300" Margin="0,0,0,10">
+                        <DatePicker x:Name="TaskTargetDate" Width="130" Height="30" FontSize="14" DockPanel.Dock="Left"/>
+                        <TextBox x:Name="TaskTargetTime" Width="130" Height="30" VerticalContentAlignment="Center" FontSize="22" HorizontalAlignment="Right" 
+                                 DockPanel.Dock="Right" TextChanged="OnTextBoxTextChanged" Background="{StaticResource watermarkTime}"/>
+                    </DockPanel>
+                    <DockPanel Width="300">
+                        <Button x:Name="TaskTimeSettings" DockPanel.Dock="Left" Style="{StaticResource btSettings}"></Button>
+                        <WrapPanel Height="70" HorizontalAlignment="Right" Margin="0,0,10,0">
+                            <Button Height="25" Width="60" Margin="5" Content="88:88" FontSize="16" HorizontalAlignment="Center"/>
+                            <Button Height="25" Width="60" Margin="5" Content="88:88" FontSize="16" HorizontalAlignment="Center"/>
+                            <Button Height="25" Width="60" Margin="5" Content="88:88" FontSize="16" HorizontalAlignment="Center"/>
+                            <Button Height="25" Width="60" Margin="5" Content="88:88" FontSize="16" HorizontalAlignment="Center"/>
+                            <Button Height="25" Width="60" Margin="5" Content="88:88" FontSize="16" HorizontalAlignment="Center"/>
+                            <Button Height="25" Width="60" Margin="5" Content="88:88" FontSize="16" HorizontalAlignment="Center"/>
+                        </WrapPanel>
+                    </DockPanel>
                     <Button x:Name="TaskTargetDateAddBtn" Width="220" Height="50" Style="{StaticResource btnAddDate}" FontSize="25"
                             Content="{DynamicResource m_AddDateTask}"/>
+                    
+                    <ListBox x:Name="TaskTargetDatesList" Width="300" Height="100" HorizontalContentAlignment="Center" Margin="0,20,0,10"/>
+                    <Button x:Name="TaskTargetDateDelBtn" Width="150" Height="30" Style="{StaticResource btTaskDateDelete}" FontSize="18" Margin="0,0,5,10"
+                            Content="{DynamicResource m_DelDateTask}" HorizontalAlignment="Right" Visibility="Visible"/>
                 </StackPanel>
             </StackPanel>
 

@@ -12,10 +12,13 @@
 
   <ItemGroup>
     <None Remove="assets\cursors\cursor.cur" />
+    <None Remove="assets\icons\white_settings-64x64.png" />
     <None Remove="assets\watermarks\textboxtime.png" />
   </ItemGroup>
 
   <ItemGroup>
+    <Resource Include="assets\icons\white_settings-64x64.png" />
+    <Resource Include="assets\watermarks\textboxtime.png" />
     <Resource Include="NotifyAppIcon.ico" />
   </ItemGroup>
 
@@ -30,9 +33,6 @@
 
   <ItemGroup>
     <Resource Include="assets\cursors\cursor.cur">
-      <CopyToOutputDirectory>Never</CopyToOutputDirectory>
-    </Resource>
-    <Resource Include="assets\watermarks\textboxtime.png">
       <CopyToOutputDirectory>Never</CopyToOutputDirectory>
     </Resource>
   </ItemGroup>

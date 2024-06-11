@@ -30,6 +30,7 @@ namespace Notifier
             TaskTitle.TextChanged += Input_TextChanged;
             TaskText.TextChanged += Input_TextChanged;
             SwitchTaskBtn.Click += SwitchTaskBtn_Click;
+            TaskTargetDateAddBtn.Click += TaskTargetDateAddBtn_Click;
 
             MouseDown += MainWindow_MouseDown;
             CloseBtn.Click += CloseBtn_Click;
@@ -70,6 +71,11 @@ namespace Notifier
                 TaskTitleDescPanel.Visibility = Visibility.Visible;
                 TaskTargetDatesPanel.Visibility = Visibility.Collapsed;
             }
+        }
+
+        private void TaskTargetDateAddBtn_Click(object sender, RoutedEventArgs e)
+        {
+
         }
 
         private void OnTextBoxTextChanged(object sender, TextChangedEventArgs e)
