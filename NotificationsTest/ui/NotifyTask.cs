@@ -14,8 +14,13 @@ namespace Notifier.ui
                 .Show();
         }
 
-        internal static void ButtonsNotify(domain.Task selectedTask)
+        internal static void ButtonsNotify(domain.Task? selectedTask)
         {
+            if (selectedTask == null)
+            {
+                return;
+            }
+
             int conversationId = 384928;
             Random random = new();
             int id = random.Next(conversationId);
@@ -38,14 +43,6 @@ namespace Notifier.ui
                     .AddArgument("action", "later")
                     .SetBackgroundActivation())
                 .Show();
-        }
-
-
-
-        private static void BuildToast()
-        {
-
-
         }
     }
 }

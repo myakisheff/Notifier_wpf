@@ -16,7 +16,7 @@ namespace Notifier
     {
         private TimeManager timeManager = new();
 
-        private domain.Task selectedTask = new();
+        private domain.Task? selectedTask;
         private TaskStorage taskStorage = new();
         private domain.Task? creatingTask;
 
@@ -30,7 +30,7 @@ namespace Notifier
 
             BtnNotify.Click += NotifyBtnFirst_Click;
             TaskAddBtn.Click += TaskAddBtn_Click;
-            ListTasks.SelectionChanged += TasksList_SelectionChanged;
+            ListTasks.SelectionChanged += ListTasks_SelectionChanged;
             TaskTitle.TextChanged += Input_TextChanged;
             TaskText.TextChanged += Input_TextChanged;
             SwitchTaskBtn.Click += SwitchTaskBtn_Click;
@@ -60,29 +60,9 @@ namespace Notifier
 
             TaskTargetDate.SelectedDate = DateTime.Now;
 
-            // temporary data
-            var data = new[] { 
-            new { TaskTitle = "Shop visit", TaskCreationDate ="11.11.2011", TaskDescription="Go to the shop", TaskTargetDate="15.11.2011" },
-            new { TaskTitle = "Wosh", TaskCreationDate ="13.11.2011", TaskDescription="", TaskTargetDate="25.01.2012" },
-            new { TaskTitle = "Read a book", TaskCreationDate ="14.12.2011", TaskDescription="Read Sister's book", TaskTargetDate="15.11.2015" },
-            new { TaskTitle = "Сделать тесты в лмс", TaskCreationDate ="02.06.2024", TaskDescription="Сделать тесты по истории и по Защите информации", TaskTargetDate="05.06.2024" },
-            new { TaskTitle = "Сделать тесты в лмс", TaskCreationDate ="02.06.2024", TaskDescription="Сделать тесты по истории и по Защите информации Сделать тесты по истории и по Защите информации Сделать тесты по истории и по Защите информации Сделать тесты по истории и по Защите информации", TaskTargetDate="05.06.2024" }};
-
-            ListTasks.ItemsSource = data;
+            ListTasks.ItemsSource = taskStorage.Tasks;
 
             UpdatePreviewData();
-        }
-
-        private void TaskTargetDateDelBtn_Click(object sender, RoutedEventArgs e)
-        {
-            
-            creatingTask?.TargetDateList?.Remove((DateInfo)TaskTargetDatesList.SelectedItem);
-            TaskTargetDatesList.Items.Refresh();
-        }
-
-        private void TaskTargetDatesList_SelectionChanged(object sender, SelectionChangedEventArgs e)
-        {
-            TaskTargetDateDelBtn.Visibility = Visibility.Visible;
         }
 
         private void InitializeNewTask()
@@ -141,6 +121,19 @@ namespace Notifier
             }
         }
 
+        private void TaskTargetDateDelBtn_Click(object sender, RoutedEventArgs e)
+        {
+            creatingTask?.TargetDateList?.Remove((DateInfo)TaskTargetDatesList.SelectedItem);
+            TaskTargetDatesList.Items.Refresh();
+        }
+
+        private void TaskTargetDatesList_SelectionChanged(object sender, SelectionChangedEventArgs e)
+        {
+            if(TaskTargetDatesList.SelectedItem != null)
+                TaskTargetDateDelBtn.Visibility = Visibility.Visible;
+            else TaskTargetDateDelBtn.Visibility = Visibility.Collapsed;
+        }
+
         private void TaskTargetTime_TextChanged(object sender, TextChangedEventArgs e)
         {
             if(sender is TextBox box)
@@ -153,14 +146,38 @@ namespace Notifier
         }
 
         private void TaskTargetDateAddBtn_Click(object sender, RoutedEventArgs e)
-        {        
-            creatingTask?.TargetDateList?.Add(new DateInfo()
+        {
+            if (creatingTask == null)
+                return;
+
+            DateInfo selectedDate = new()
             {
-                ID = creatingTask?.TargetDateList?.Count == 0 ? 0 : creatingTask?.TargetDateList?.Last().ID + 1,
+                ID = creatingTask.TargetDateList.Count == 0 ? 0 : creatingTask.TargetDateList.Last().ID + 1,
                 Date = TaskTargetDate?.SelectedDate!.Value.ToShortDateString(),
                 Time = timeManager.CurrentTime,
-            });
+            };
 
+            foreach(DateInfo tDate in creatingTask.TargetDateList)
+            {
+                if (tDate.Date == selectedDate.Date && tDate.Time == selectedDate.Time)
+                {
+                    MessageBox.Show((string)Application.Current.FindResource("m_RepeatedDate"));
+                    return;
+                }
+            }
+
+            DateTime choosedDate = DateTime.ParseExact($"{selectedDate.Date} {selectedDate.Time}", "dd.MM.yyyy HH:mm",
+                                       System.Globalization.CultureInfo.InvariantCulture);
+
+            if (choosedDate < DateTime.Now)
+            {
+                MessageBox.Show((string)Application.Current.FindResource("m_WrongDate"));
+                return;
+            }
+
+            creatingTask.TargetDateList.Add(selectedDate);
+
+            UpdatePreviewData();
             TaskTargetDatesList.Items.Refresh();
         }
 
@@ -196,28 +213,62 @@ namespace Notifier
 
         public void UpdatePreviewData()
         {
-            var previewData = new { TaskTitle = TaskTitle.Text, TaskCreationDate = DateTime.Now.ToShortDateString(), TaskDescription = TaskText.Text, TaskTargetDate = DateTime.Now.AddDays(1).ToString() };
+            var previewData = new { TaskTitle = TaskTitle.Text, TaskCreationDate = DateTime.Now.ToShortDateString(), TaskDescription = TaskText.Text, TaskTargetDate = creatingTask?.GetNearestDate()?.ToString() };
 
             TaskPreview.DataContext = previewData;
         }
         private void TaskAddBtn_Click(object sender, RoutedEventArgs e)
         {
             InfoTask.Visibility = Visibility.Visible;
+
+            if(creatingTask == null)
+            {
+                WrongTaskData();
+                return;
+            }
+
+            creatingTask.TaskCreationDate = DateTime.Now.ToShortDateString();
+            creatingTask.TaskTitle = TaskTitle.Text;
+            creatingTask.TaskDescription = TaskText.Text;
+
+            if (String.IsNullOrEmpty(creatingTask.TaskTitle) || creatingTask.TargetDateList == null || creatingTask.TargetDateList.Count == 0)
+            { 
+                WrongTaskData();
+                return;
+            }
+
+            creatingTask.id = taskStorage.GetAllTasks().Count == 0 ? 0 : taskStorage.GetLastTask().id + 1;
+
+            taskStorage.AddTask(creatingTask);
+            InitializeNewTask();
+
+            InfoTask.Content = (string)Application.Current.FindResource("m_TaskCreationSuccess");
+            InfoTask.Foreground = (System.Windows.Media.Brush?)new BrushConverter().ConvertFrom("#10790e");
+
+            UpdateListTasksData();
+        }
+
+        private void UpdateListTasksData()
+        {
+            taskStorage.Tasks.ForEach(task =>
+            {
+                task.TaskTargetDate = task.GetNearestDate().ToString();
+            });
+            ListTasks.Items.Refresh();
+        }
+
+        private void WrongTaskData()
+        {
             var bc = new BrushConverter();
-            //if (!taskListUI.AddNewTask(TaskTitle.Text, TaskText.Text))
-            //{
-            //    InfoTask.Content = (string)Application.Current.FindResource("m_TaskCreationWrong");
-            //    InfoTask.Foreground = (System.Windows.Media.Brush?)bc.ConvertFrom("#b91316");
-            //}
-            //else
-            //{
-            //    InfoTask.Content = (string)Application.Current.FindResource("m_TaskCreationSuccess");
-            //    InfoTask.Foreground = (System.Windows.Media.Brush?)bc.ConvertFrom("#10790e");
-            //    UpdateTaskList();
-            //}
+            InfoTask.Content = (string)Application.Current.FindResource("m_TaskCreationWrong");
+            InfoTask.Foreground = (System.Windows.Media.Brush?)bc.ConvertFrom("#b91316");
         }
 
         // Task List section
+        private void ListTasks_SelectionChanged(object sender, SelectionChangedEventArgs e)
+        {
+            selectedTask = (domain.Task)((LayoutListTasks)sender).SelectedItem;
+        }
 
         private void MenuItemTile_Click(object sender, RoutedEventArgs e)
         {
@@ -227,16 +278,6 @@ namespace Notifier
         private void MenuItemList_Click(object sender, RoutedEventArgs e)
         {
             ListTasks.layout = Layout.List;
-        }
-
-        private void UpdateTaskList()
-        {
-            // TasksList.ItemsSource = taskListUI.updateTaskList();
-        }
-        private void TasksList_SelectionChanged(object sender, SelectionChangedEventArgs e)
-        {
-            var item = (ListBox)sender;
-            selectedTask = (domain.Task)item.SelectedItem;
         }
 
         // not visable section

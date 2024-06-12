@@ -12,7 +12,7 @@ namespace Notifier.ui
         }
 
         public static readonly DependencyProperty layoutProperty =
-            DependencyProperty.Register("layout", typeof(Layout), typeof(LayoutListTasks), new PropertyMetadata(Layout.List));
+            DependencyProperty.Register("layout", typeof(Layout), typeof(LayoutListTasks), new PropertyMetadata(Layout.Tile));
     }
 
     public enum Layout

@@ -2,41 +2,46 @@
 {
     internal class TaskStorage
     {
-        private List<Task> tasks;
+        public List<Task> Tasks { get; private set; }
 
         public TaskStorage() 
-        { 
-            tasks = new();
+        {
+            Tasks = new();
         }
 
         public TaskStorage(List<Task> tasks)
         {
-            this.tasks = tasks;
+            Tasks = tasks;
         }
 
         public void AddTask(Task task)
         {
-            tasks.Add(task);
+            Tasks.Add(task);
         }
 
         public void RemoveTask(Task task)
         {
-            tasks.Remove(task);
+            Tasks.Remove(task);
         }
 
         public void Clear()
         {
-            tasks.Clear();
+            Tasks.Clear();
         }
 
         public bool Contains(Task task)
         {
-            return tasks.Contains(task);
+            return Tasks.Contains(task);
         }
 
         public List<Task> GetAllTasks()
         {
-            return tasks;
+            return Tasks;
+        }
+
+        public Task GetLastTask()
+        {
+            return Tasks.Last();
         }
     }
 }

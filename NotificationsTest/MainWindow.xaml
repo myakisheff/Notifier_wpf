@@ -55,6 +55,7 @@
                     </Setter>
                 </Style>
             </local:LayoutListTasks.ItemContainerStyle>
+
             <local:LayoutListTasks.ContextMenu>
                 <ContextMenu>
                     <MenuItem Header="Tile" Click="MenuItemTile_Click"/>

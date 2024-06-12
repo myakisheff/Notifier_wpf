@@ -21,4 +21,7 @@
     <v:String x:Key="m_DelDateTask">Delete date</v:String>
     <v:String x:Key="m_AddDateTimeTaskLabel">Time</v:String>
 
+    <v:String x:Key="m_WrongDate">Date must be later than the current one</v:String>
+    <v:String x:Key="m_RepeatedDate">Date should not be repeated</v:String>
+
 </ResourceDictionary>
