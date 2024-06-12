@@ -1,4 +1,5 @@
-﻿using Notifier.ui;
+﻿using Notifier.domain;
+using Notifier.ui;
 using System.Drawing;
 using System.IO;
 using System.Windows;
@@ -13,8 +14,11 @@ namespace Notifier
     /// </summary>
     public partial class MainWindow : Window
     {
-        private TaskList taskListUI = new();
+        private TimeManager timeManager = new();
+
         private domain.Task selectedTask = new();
+        private TaskStorage taskStorage = new();
+        private domain.Task? creatingTask;
 
         public MainWindow()
         {
@@ -38,11 +42,23 @@ namespace Notifier
             TaskTargetTimeHours.LostFocus += TaskTargetTime_LostFocus;
             TaskTargetTimeMinutes.LostFocus += TaskTargetTime_LostFocus;
 
-            TaskTargetTimeHours.TextChanged += TaskTargetTimeHours_TextChanged;
-            TaskTargetTimeMinutes.TextChanged += TaskTargetTimeMinutes_TextChanged;
+            TaskTargetTimeHours.TextChanged += TaskTargetTime_TextChanged;
+            TaskTargetTimeMinutes.TextChanged += TaskTargetTime_TextChanged;
 
             MouseDown += MainWindow_MouseDown;
             CloseBtn.Click += CloseBtn_Click;
+
+            HoursDownBtn.Click += HoursDownBtn_Click;
+            HoursUpBtn.Click += HoursUpBtn_Click;
+            MinutesDownBtn.Click += MinutesDownBtn_Click;
+            MinutesUpBtn.Click += MinutesUpBtn_Click;
+
+            TaskTargetDatesList.SelectionChanged += TaskTargetDatesList_SelectionChanged;
+            TaskTargetDateDelBtn.Click += TaskTargetDateDelBtn_Click;
+
+            InitializeNewTask();
+
+            TaskTargetDate.SelectedDate = DateTime.Now;
 
             // temporary data
             var data = new[] { 
@@ -57,6 +73,25 @@ namespace Notifier
             UpdatePreviewData();
         }
 
+        private void TaskTargetDateDelBtn_Click(object sender, RoutedEventArgs e)
+        {
+            
+            creatingTask?.TargetDateList?.Remove((DateInfo)TaskTargetDatesList.SelectedItem);
+            TaskTargetDatesList.Items.Refresh();
+        }
+
+        private void TaskTargetDatesList_SelectionChanged(object sender, SelectionChangedEventArgs e)
+        {
+            TaskTargetDateDelBtn.Visibility = Visibility.Visible;
+        }
+
+        private void InitializeNewTask()
+        {
+            creatingTask = new();
+            TaskTargetDatesList.ItemsSource = creatingTask.TargetDateList;
+            TaskTargetDatesList.Items.Refresh();
+        }
+
         // Menu section
         private void NotifyBtnFirst_Click(object sender, RoutedEventArgs e)
         {
@@ -68,6 +103,30 @@ namespace Notifier
         }
 
         // Task add section
+        private void MinutesUpBtn_Click(object sender, RoutedEventArgs e)
+        {
+            timeManager.AddMinutes(1);
+            TaskTargetTimeMinutes.Text = timeManager.GetMinutes();
+        }
+
+        private void MinutesDownBtn_Click(object sender, RoutedEventArgs e)
+        {
+            timeManager.RemoveMinutes(1);
+            TaskTargetTimeMinutes.Text = timeManager.GetMinutes();
+        }
+
+        private void HoursUpBtn_Click(object sender, RoutedEventArgs e)
+        {
+            timeManager.AddHours(1);
+            TaskTargetTimeHours.Text = timeManager.GetHours();
+        }
+
+        private void HoursDownBtn_Click(object sender, RoutedEventArgs e)
+        {
+            timeManager.RemoveHours(1);
+            TaskTargetTimeHours.Text = timeManager.GetHours();
+        }
+
         private void SwitchTaskBtn_Click(object sender, RoutedEventArgs e)
         {
             if(TaskTitleDescPanel.Visibility == Visibility.Visible)
@@ -82,22 +141,27 @@ namespace Notifier
             }
         }
 
-        private void TaskTargetTimeHours_TextChanged(object sender, TextChangedEventArgs e)
+        private void TaskTargetTime_TextChanged(object sender, TextChangedEventArgs e)
         {
             if(sender is TextBox box)
             {
-                // check 
+                if (!timeManager.SetNewTime(TaskTargetTimeHours.Text, TaskTargetTimeMinutes.Text))
+                    box.Foreground = new SolidColorBrush(Colors.MediumVioletRed);
+                else
+                    box.Foreground = new SolidColorBrush(Colors.Black);
             }
         }
 
-        private void TaskTargetTimeMinutes_TextChanged(object sender, TextChangedEventArgs e)
-        {
-            throw new NotImplementedException();
-        }
-
         private void TaskTargetDateAddBtn_Click(object sender, RoutedEventArgs e)
-        {
+        {        
+            creatingTask?.TargetDateList?.Add(new DateInfo()
+            {
+                ID = creatingTask?.TargetDateList?.Count == 0 ? 0 : creatingTask?.TargetDateList?.Last().ID + 1,
+                Date = TaskTargetDate?.SelectedDate!.Value.ToShortDateString(),
+                Time = timeManager.CurrentTime,
+            });
 
+            TaskTargetDatesList.Items.Refresh();
         }
 
         private void OnTextBoxTextChanged(object sender, TextChangedEventArgs e)
@@ -140,17 +204,17 @@ namespace Notifier
         {
             InfoTask.Visibility = Visibility.Visible;
             var bc = new BrushConverter();
-            if (!taskListUI.AddNewTask(TaskTitle.Text, TaskText.Text))
-            {
-                InfoTask.Content = (string)Application.Current.FindResource("m_TaskCreationWrong");
-                InfoTask.Foreground = (System.Windows.Media.Brush?)bc.ConvertFrom("#b91316");
-            }
-            else
-            {
-                InfoTask.Content = (string)Application.Current.FindResource("m_TaskCreationSuccess");
-                InfoTask.Foreground = (System.Windows.Media.Brush?)bc.ConvertFrom("#10790e");
-                UpdateTaskList();
-            }
+            //if (!taskListUI.AddNewTask(TaskTitle.Text, TaskText.Text))
+            //{
+            //    InfoTask.Content = (string)Application.Current.FindResource("m_TaskCreationWrong");
+            //    InfoTask.Foreground = (System.Windows.Media.Brush?)bc.ConvertFrom("#b91316");
+            //}
+            //else
+            //{
+            //    InfoTask.Content = (string)Application.Current.FindResource("m_TaskCreationSuccess");
+            //    InfoTask.Foreground = (System.Windows.Media.Brush?)bc.ConvertFrom("#10790e");
+            //    UpdateTaskList();
+            //}
         }
 
         // Task List section
