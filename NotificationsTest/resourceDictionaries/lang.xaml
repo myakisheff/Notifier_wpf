@@ -23,5 +23,6 @@
 
     <v:String x:Key="m_WrongDate">Date must be later than the current one</v:String>
     <v:String x:Key="m_RepeatedDate">Date should not be repeated</v:String>
+    <v:String x:Key="m_TaskDateHint">Date</v:String>
 
 </ResourceDictionary>
