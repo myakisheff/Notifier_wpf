@@ -1,4 +1,5 @@
 ﻿using Notifier.domain;
+using Notifier.domain.repository;
 using Notifier.ui;
 using System.Drawing;
 using System.IO;
@@ -14,10 +15,11 @@ namespace Notifier
     /// </summary>
     public partial class MainWindow : Window
     {
-        private TimeManager timeManager = new();
+        private readonly TimeManager timeManager = new();
+
+        private readonly FakeTaskRepositoryImpl taskRepository = new();
 
         private domain.Task? selectedTask;
-        private TaskStorage taskStorage = new();
         private domain.Task? creatingTask;
 
         public MainWindow()
@@ -60,7 +62,7 @@ namespace Notifier
 
             TaskTargetDate.SelectedDate = DateTime.Now;
 
-            ListTasks.ItemsSource = taskStorage.Tasks;
+            ListTasks.ItemsSource = taskRepository.GetTaskList();
 
             UpdatePreviewData();
         }
@@ -69,6 +71,8 @@ namespace Notifier
         {
             creatingTask = new();
             TaskTargetDatesList.ItemsSource = creatingTask.TargetDateList;
+            TaskTitle.Text = "";
+            TaskText.Text = "";
             TaskTargetDatesList.Items.Refresh();
         }
 
@@ -237,23 +241,25 @@ namespace Notifier
                 return;
             }
 
-            creatingTask.id = taskStorage.GetAllTasks().Count == 0 ? 0 : taskStorage.GetLastTask().id + 1;
+            creatingTask.id = taskRepository.GetTaskList().Any() ? taskRepository.GetTaskList().Last().id + 1 : 0;
 
-            taskStorage.AddTask(creatingTask);
-            InitializeNewTask();
+            taskRepository.Create(creatingTask);
 
             InfoTask.Content = (string)Application.Current.FindResource("m_TaskCreationSuccess");
             InfoTask.Foreground = (System.Windows.Media.Brush?)new BrushConverter().ConvertFrom("#10790e");
 
+            InitializeNewTask();
+            UpdatePreviewData();
             UpdateListTasksData();
         }
 
         private void UpdateListTasksData()
         {
-            taskStorage.Tasks.ForEach(task =>
+            foreach(var task in taskRepository.GetTaskList())
             {
                 task.TaskTargetDate = task.GetNearestDate().ToString();
-            });
+            }
+
             ListTasks.Items.Refresh();
         }
 
