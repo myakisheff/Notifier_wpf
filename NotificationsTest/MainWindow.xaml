@@ -116,7 +116,9 @@
                     <Button x:Name="TaskTargetDateAddBtn" Width="220" Height="50" Style="{StaticResource btnAddDate}" FontSize="25" Margin="0,25,0,10"
                             Content="{DynamicResource m_AddDateTask}"/>
 
-                    <ListBox x:Name="TaskTargetDatesList" BorderThickness="1" ItemContainerStyle="{StaticResource DateInfoStyle}" BorderBrush="#eaeaeb" HorizontalContentAlignment="Center" Width="300" Height="150" Margin="0,20,0,10"/>
+                    <ListBox x:Name="TaskTargetDatesList" Template="{StaticResource ArrowedItemsControl}" ItemContainerStyle="{StaticResource DateInfoStyle}" 
+                             Width="300" Height="150" Margin="0,20,0,10"/>
+
                     <Button x:Name="TaskTargetDateDelBtn" Width="150" Height="30" Style="{StaticResource btTaskDateDelete}" FontSize="18" Margin="0,0,5,10"
                             Content="{DynamicResource m_DelDateTask}" HorizontalAlignment="Right" Visibility="Hidden"/>
                 </StackPanel>
