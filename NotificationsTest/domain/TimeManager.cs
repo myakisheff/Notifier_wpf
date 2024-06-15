@@ -1,6 +1,4 @@
-﻿using System.Windows;
-
-namespace Notifier.domain
+﻿namespace Notifier.domain
 {
     class TimeManager
     {
