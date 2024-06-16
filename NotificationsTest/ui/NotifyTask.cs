@@ -4,26 +4,14 @@ namespace Notifier.ui
 {
     class NotifyTask
     {
-        internal static void SimpleNotify(domain.model.Task selectedTask)
-        {
-            new ToastContentBuilder()
-                .AddArgument("action", "viewConversation")
-                .AddArgument("conversationId", 9813)
-                .AddText(selectedTask.TaskTitle)
-                .AddText(selectedTask.TaskDescription)
-                .Show();
-        }
-
-        internal static void ButtonsNotify(domain.model.Task? selectedTask)
+        internal static int Notify(domain.model.Task? selectedTask)
         {
             if (selectedTask == null)
             {
-                return;
+                return -1;
             }
 
-            int conversationId = 384928;
-            Random random = new();
-            int id = random.Next(conversationId);
+            int id = selectedTask.ID;
 
             // Construct the content
             new ToastContentBuilder()
@@ -31,18 +19,10 @@ namespace Notifier.ui
                 .AddArgument("conversationId", id)
                 .AddHeader(selectedTask.ID.ToString(), selectedTask.TaskTitle, "label")
                 .AddText(selectedTask.TaskDescription)
-
-                // Buttons
-                .AddButton(new ToastButton()
-                    .SetContent("Ok")
-                    .AddArgument("action", "ok")
-                    .SetBackgroundActivation())
-
-                .AddButton(new ToastButton()
-                    .SetContent("Later")
-                    .AddArgument("action", "later")
-                    .SetBackgroundActivation())
+                .AddText(selectedTask.TaskTargetDate)
                 .Show();
+
+            return id;
         }
     }
 }

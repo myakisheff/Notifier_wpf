@@ -6,6 +6,7 @@
     <v:String x:Key="m_ChangeTask">Change task</v:String>
     <v:String x:Key="m_DeleteTask">Delete Task</v:String>
     <v:String x:Key="m_Settings">Settings</v:String>
+    <v:String x:Key="m_Refresh">Refresh</v:String>
     <v:String x:Key="m_ChangeTheme">Change theme</v:String>
     <v:String x:Key="m_OffNotify">Off notify</v:String>
     <v:String x:Key="m_LaterNotify">Later</v:String>

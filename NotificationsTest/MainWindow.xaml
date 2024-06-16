@@ -34,6 +34,7 @@
         <!-- Menu (0 row, 0,1 column) -->
         <Border Grid.Row="0" Grid.Column="0" Grid.ColumnSpan="2" Background="#120f17" BorderBrush="#2c2538" BorderThickness="1" CornerRadius="0,0,25,25">
             <StackPanel Orientation="Horizontal" HorizontalAlignment="Center">
+                <Button x:Name="BtnRefresh" Style="{StaticResource btMenu}" Content="{DynamicResource m_Refresh}"/>
                 <Button x:Name="BtnSettings" Style="{StaticResource btMenu}" Content="{DynamicResource m_Settings}"/>
                 <Button x:Name="BtnNotify" Style="{StaticResource btMenu}" Content="Notify"/>
             </StackPanel>

@@ -1,4 +1,4 @@
-﻿namespace Notifier.ui
+﻿namespace Notifier.domain.model
 {
     public class DateInfo
     {

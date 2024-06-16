@@ -91,7 +91,7 @@ namespace Notifier.domain.controller
 
         public void RemoveMinutes(int minutes)
         {
-            int newMinutes = currentTime.Minute + minutes;
+            int newMinutes = currentTime.Minute - minutes;
             while (newMinutes < 0) newMinutes += 60;
             SetNewMinute(newMinutes.ToString());
         }

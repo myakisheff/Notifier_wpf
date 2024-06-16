@@ -1,4 +1,5 @@
 ﻿using Notifier.domain.controller;
+using Notifier.domain.model;
 using Notifier.domain.repository;
 using Notifier.ui;
 using System.Drawing;
@@ -18,6 +19,7 @@ namespace Notifier
         private readonly ITaskRepository taskRepository = new FakeTaskRepositoryImpl();
         private readonly TaskController taskController = new();
         private readonly TimeController timeController = new();
+        private readonly NotifyController notifyController = new();
 
         public MainWindow()
         {
@@ -27,6 +29,7 @@ namespace Notifier
             tbIcon.Icon = new Icon(Directory.GetParent(Environment.CurrentDirectory)?.Parent?.Parent?.FullName + "\\NotifyAppIcon.ico");
             PopupTrayCloseBtn.Click += PopupTrayCloseBtn_Click;
 
+            BtnRefresh.Click += BtnRefresh_Click;
             BtnNotify.Click += NotifyBtnFirst_Click;
             TaskAddBtn.Click += TaskAddBtn_Click;
             ListTasks.SelectionChanged += ListTasks_SelectionChanged;
@@ -58,6 +61,7 @@ namespace Notifier
             InitializeNewTask();
 
             TaskTargetDate.SelectedDate = DateTime.Now;
+            notifyController.Tasks = (List<domain.model.Task>)taskRepository.GetTaskList();
 
             ListTasks.ItemsSource = taskRepository.GetTaskList();
 
@@ -76,11 +80,16 @@ namespace Notifier
         // Menu section
         private void NotifyBtnFirst_Click(object sender, RoutedEventArgs e)
         {
-            NotifyTask.ButtonsNotify(taskController.GetSelectedTask());
+            NotifyTask.Notify(taskController.GetSelectedTask());
         }
         private void CloseBtn_Click(object sender, RoutedEventArgs e)
         {
             Hide();
+        }
+
+        private void BtnRefresh_Click(object sender, RoutedEventArgs e)
+        {
+            UpdateListTasksData();
         }
 
         // Task add section
@@ -229,8 +238,6 @@ namespace Notifier
         {
             InfoTask.Visibility = Visibility.Visible;
 
-
-
             taskController.GetCreatingTask().TaskCreationDate = DateTime.Now.ToShortDateString();
             taskController.GetCreatingTask().TaskTitle = TaskTitle.Text;
             taskController.GetCreatingTask().TaskDescription = TaskText.Text;
@@ -253,13 +260,26 @@ namespace Notifier
             InitializeNewTask();
             UpdatePreviewData();
             UpdateListTasksData();
+
+            notifyController.CheckDates();
         }
 
         private void UpdateListTasksData()
         {
+            List<int> taskIdsToDelete = new(); 
+
             foreach(var task in taskRepository.GetTaskList())
             {
                 task.TaskTargetDate = task.GetNearestDate().ToString();
+                if(task.GetNearestDate() == null)
+                {
+                    taskIdsToDelete.Add(task.ID);
+                }
+            }
+
+            foreach (int id in taskIdsToDelete)
+            {
+                taskRepository.DeleteById(id);
             }
 
             ListTasks.Items.Refresh();

@@ -1,5 +1,4 @@
-﻿
-namespace Notifier.domain.repository
+﻿namespace Notifier.domain.repository
 {
     class FakeTaskRepositoryImpl : ITaskRepository
     {

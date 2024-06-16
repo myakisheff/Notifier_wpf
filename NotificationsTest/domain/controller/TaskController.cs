@@ -1,4 +1,4 @@
-﻿using Notifier.ui;
+﻿using Notifier.domain.model;
 
 namespace Notifier.domain.controller
 {

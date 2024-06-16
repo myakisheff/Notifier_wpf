@@ -4,7 +4,7 @@ namespace Notifier.domain.model
 {
     internal class Task
     {
-        public int? ID { get; set; }
+        public int ID { get; set; }
         public string? TaskTitle { get; set; }
         public string? TaskDescription { get; set; }
         public string? TaskCreationDate { get; set; }
@@ -13,27 +13,33 @@ namespace Notifier.domain.model
 
         public DateTime? GetNearestDate()
         {
-            if (TargetDateList == null || TargetDateList.Count == 0)
+            if (!TargetDateList.Any())
                 return null;
 
-            DateInfo? nearestDate = TargetDateList[0];
+            DateInfo? nearestDate = null;
 
             foreach (DateInfo date in TargetDateList) 
             {
-                DateTime datedt = DateTime.ParseExact($"{date.Date} {date.Time}", "dd.MM.yyyy HH:mm",
+                DateTime dateFromList = DateTime.ParseExact($"{date.Date} {date.Time}", "dd.MM.yyyy HH:mm",
                                        System.Globalization.CultureInfo.InvariantCulture);
 
-                if (datedt < DateTime.Now)
+                if (dateFromList < DateTime.Now)
                 {
                     continue;
                 }
 
-                DateTime nearestDatedt = DateTime.ParseExact($"{nearestDate.Date} {nearestDate.Time}", "dd.MM.yyyy HH:mm",
+                if (nearestDate == null) nearestDate = date;
+                else
+                {
+                    DateTime nearestDatedt = DateTime.ParseExact($"{nearestDate.Date} {nearestDate.Time}", "dd.MM.yyyy HH:mm",
                                        System.Globalization.CultureInfo.InvariantCulture);
 
-                if (nearestDatedt > datedt)
-                    nearestDate = date;
+                    if (nearestDatedt > dateFromList)
+                        nearestDate = date;
+                }
             }
+
+            if (nearestDate == null) return null;
 
             return DateTime.ParseExact($"{nearestDate.Date} {nearestDate.Time}", "dd.MM.yyyy HH:mm",
                                        System.Globalization.CultureInfo.InvariantCulture);

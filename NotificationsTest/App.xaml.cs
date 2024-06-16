@@ -43,7 +43,7 @@ namespace Notifier
                 Application.Current.Dispatcher.Invoke(delegate
                 {
                     // TODO: Show the corresponding content
-                    MessageBox.Show("Toast activated. Args: " + toastArgs.Argument);
+                    // MessageBox.Show("Toast activated. Args: " + toastArgs.Argument);
                 });
             };
         }
