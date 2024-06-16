@@ -39,11 +39,15 @@ namespace Notifier
             StartProgressBar();
         }
 
-        private void SetTheme()
+        private static void SetTheme()
         {
             var uri = new Uri("resourceDictionaries/themes/DarkTheme.xaml", UriKind.Relative);
 
-            ResourceDictionary resourceDict = Application.LoadComponent(uri) as ResourceDictionary;
+            ResourceDictionary? resourceDict = Application.LoadComponent(uri) as ResourceDictionary;
+
+            if (resourceDict == null)
+                return;
+
             Application.Current.Resources.Clear();
             Application.Current.Resources.MergedDictionaries.Add(resourceDict);
         }
