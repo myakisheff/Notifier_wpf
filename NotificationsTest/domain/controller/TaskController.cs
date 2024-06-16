@@ -1,12 +1,11 @@
-﻿
-using Notifier.ui;
+﻿using Notifier.ui;
 
 namespace Notifier.domain.controller
 {
     class TaskController
     {
-        private Task? selectedTask;
-        private Task creatingTask;
+        private model.Task? selectedTask;
+        private model.Task creatingTask;
 
         public TaskController()
         {
@@ -15,10 +14,10 @@ namespace Notifier.domain.controller
         }
 
         public void ClearCreatingTask() => creatingTask = new();
-        public Task GetCreatingTask() => creatingTask;
-        public Task? GetSelectedTask() => selectedTask;
+        public model.Task GetCreatingTask() => creatingTask;
+        public model.Task? GetSelectedTask() => selectedTask;
         public void AddDateToCreatingTask(DateInfo selectedDate) => creatingTask.TargetDateList.Add(selectedDate);
         public void RemoveDateFromCreatingTask(DateInfo dateInfo) => creatingTask.TargetDateList?.Remove(dateInfo);
-        public void SetSelectedTask(Task selectedTask) => this.selectedTask = selectedTask;
+        public void SetSelectedTask(model.Task selectedTask) => this.selectedTask = selectedTask;
     }
 }

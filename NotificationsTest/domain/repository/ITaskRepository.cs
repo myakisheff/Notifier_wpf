@@ -2,10 +2,10 @@
 {
     interface ITaskRepository
     {
-        IEnumerable<Task> GetTaskList();
-        void Create(Task task);
-        Task? GetById(int id);
-        void Update(Task task);
+        IEnumerable<model.Task> GetTaskList();
+        void Create(model.Task task);
+        model.Task? GetById(int id);
+        void Update(model.Task task);
         void DeleteById(int id);
         void Save();
     }

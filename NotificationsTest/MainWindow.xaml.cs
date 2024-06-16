@@ -1,5 +1,4 @@
-﻿using Notifier.domain;
-using Notifier.domain.controller;
+﻿using Notifier.domain.controller;
 using Notifier.domain.repository;
 using Notifier.ui;
 using System.Drawing;
@@ -16,14 +15,9 @@ namespace Notifier
     /// </summary>
     public partial class MainWindow : Window
     {
-        private readonly TimeManager timeManager = new();
-
-        private readonly FakeTaskRepositoryImpl taskRepository = new();
-
+        private readonly ITaskRepository taskRepository = new FakeTaskRepositoryImpl();
         private readonly TaskController taskController = new();
-
-        private domain.Task? selectedTaskk;
-        private domain.Task? creatingTaskk;
+        private readonly TimeController timeController = new();
 
         public MainWindow()
         {
@@ -92,26 +86,26 @@ namespace Notifier
         // Task add section
         private void MinutesUpBtn_Click(object sender, RoutedEventArgs e)
         {
-            timeManager.AddMinutes(1);
-            TaskTargetTimeMinutes.Text = timeManager.GetMinutes();
+            timeController.AddMinutes(1);
+            TaskTargetTimeMinutes.Text = timeController.GetMinutesString();
         }
 
         private void MinutesDownBtn_Click(object sender, RoutedEventArgs e)
         {
-            timeManager.RemoveMinutes(1);
-            TaskTargetTimeMinutes.Text = timeManager.GetMinutes();
+            timeController.RemoveMinutes(1);
+            TaskTargetTimeMinutes.Text = timeController.GetMinutesString();
         }
 
         private void HoursUpBtn_Click(object sender, RoutedEventArgs e)
         {
-            timeManager.AddHours(1);
-            TaskTargetTimeHours.Text = timeManager.GetHours();
+            timeController.AddHours(1);
+            TaskTargetTimeHours.Text = timeController.GetHoursString();
         }
 
         private void HoursDownBtn_Click(object sender, RoutedEventArgs e)
         {
-            timeManager.RemoveHours(1);
-            TaskTargetTimeHours.Text = timeManager.GetHours();
+            timeController.RemoveHours(1);
+            TaskTargetTimeHours.Text = timeController.GetHoursString();
         }
 
         private void SwitchTaskBtn_Click(object sender, RoutedEventArgs e)
@@ -145,10 +139,20 @@ namespace Notifier
         {
             if(sender is TextBox box)
             {
-                if (!timeManager.SetNewTime(TaskTargetTimeHours.Text, TaskTargetTimeMinutes.Text))
-                    box.Foreground = new SolidColorBrush(Colors.MediumVioletRed);
-                else
-                    box.Foreground = new SolidColorBrush(Colors.Black);
+                if(box.Name == "TaskTargetTimeHours") 
+                { 
+                    if(!timeController.SetNewHour(box.Text))
+                        box.Foreground = new SolidColorBrush(Colors.MediumVioletRed);
+                    else
+                        box.Foreground = new SolidColorBrush(Colors.Black);
+                }
+                else if(box.Name == "TaskTargetTimeMinutes")
+                {
+                    if (!timeController.SetNewMinute(box.Text))
+                        box.Foreground = new SolidColorBrush(Colors.MediumVioletRed);
+                    else
+                        box.Foreground = new SolidColorBrush(Colors.Black);
+                }
             }
         }
 
@@ -158,7 +162,7 @@ namespace Notifier
             {
                 ID = taskController.GetCreatingTask().TargetDateList.Any() ? taskController.GetCreatingTask().TargetDateList.Last().ID + 1 : 0,
                 Date = TaskTargetDate?.SelectedDate!.Value.ToShortDateString(),
-                Time = timeManager.CurrentTime,
+                Time = timeController.GetTimeString(),
             };
 
             foreach(DateInfo tDate in taskController.GetCreatingTask().TargetDateList)
@@ -231,7 +235,7 @@ namespace Notifier
             taskController.GetCreatingTask().TaskTitle = TaskTitle.Text;
             taskController.GetCreatingTask().TaskDescription = TaskText.Text;
 
-            domain.Task creatingTask = taskController.GetCreatingTask();
+            domain.model.Task creatingTask = taskController.GetCreatingTask();
 
             if (String.IsNullOrEmpty(creatingTask.TaskTitle) || creatingTask.TargetDateList == null || creatingTask.TargetDateList.Count == 0)
             { 
@@ -239,7 +243,7 @@ namespace Notifier
                 return;
             }
 
-            creatingTask.id = taskRepository.GetTaskList().Any() ? taskRepository.GetTaskList().Last().id + 1 : 0;
+            creatingTask.ID = taskRepository.GetTaskList().Any() ? taskRepository.GetTaskList().Last().ID + 1 : 0;
 
             taskRepository.Create(creatingTask);
 
@@ -271,7 +275,7 @@ namespace Notifier
         // Task List section
         private void ListTasks_SelectionChanged(object sender, SelectionChangedEventArgs e)
         {
-            taskController.SetSelectedTask((domain.Task)((LayoutListTasks)sender).SelectedItem);
+            taskController.SetSelectedTask((domain.model.Task)((LayoutListTasks)sender).SelectedItem);
         }
 
         private void MenuItemTile_Click(object sender, RoutedEventArgs e)

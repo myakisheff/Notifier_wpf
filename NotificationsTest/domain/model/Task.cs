@@ -1,11 +1,10 @@
 ﻿using Notifier.ui;
-using System.Windows.Forms;
 
-namespace Notifier.domain
+namespace Notifier.domain.model
 {
     internal class Task
     {
-        public int? id { get; set; }
+        public int? ID { get; set; }
         public string? TaskTitle { get; set; }
         public string? TaskDescription { get; set; }
         public string? TaskCreationDate { get; set; }

@@ -4,7 +4,7 @@ namespace Notifier.ui
 {
     class NotifyTask
     {
-        internal static void SimpleNotify(domain.Task selectedTask)
+        internal static void SimpleNotify(domain.model.Task selectedTask)
         {
             new ToastContentBuilder()
                 .AddArgument("action", "viewConversation")
@@ -14,7 +14,7 @@ namespace Notifier.ui
                 .Show();
         }
 
-        internal static void ButtonsNotify(domain.Task? selectedTask)
+        internal static void ButtonsNotify(domain.model.Task? selectedTask)
         {
             if (selectedTask == null)
             {
@@ -29,7 +29,7 @@ namespace Notifier.ui
             new ToastContentBuilder()
                 .AddArgument("action", "viewConversation")
                 .AddArgument("conversationId", id)
-                .AddHeader(selectedTask.id.ToString(), selectedTask.TaskTitle, "label")
+                .AddHeader(selectedTask.ID.ToString(), selectedTask.TaskTitle, "label")
                 .AddText(selectedTask.TaskDescription)
 
                 // Buttons
