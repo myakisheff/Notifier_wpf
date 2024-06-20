@@ -1,58 +1,47 @@
-﻿
-using Amazon.S3;
+﻿using Notifier.domain.entity;
 
 namespace Notifier.domain.repository
 {
     internal class SSSTaskRepositoryImpl : ITaskRepository
     {
-        private List<model.Task> TaskList;
+        private S3TaskContext storage;
 
         private string accessKey = "YCAJEbcpGsxDG9-feFfWpRoeh";
         private string secretKey = "YCP0zh1uVdLNZMN0Iwd3iBaEflGfOQzdmIao7cXv";
 
         public SSSTaskRepositoryImpl()
         {
-            TaskList = new();
-
-            AmazonS3Config configsS3 = new()
-            {
-                ServiceURL = "https://s3.yandexcloud.net",
-            };
-
-            AmazonS3Client s3client = new(configsS3);
-
-            
-
+            storage = new();
         }
 
         public void Create(model.Task task)
         {
-            throw new NotImplementedException();
+            storage.Tasks.Add(task);
         }
 
         public void DeleteById(int id)
         {
-            throw new NotImplementedException();
+            
         }
 
         public model.Task? GetById(int id)
         {
-            throw new NotImplementedException();
+            return null;
         }
 
         public IEnumerable<model.Task> GetTaskList()
         {
-            throw new NotImplementedException();
+            return storage.Tasks;
         }
 
         public void Save()
         {
-            throw new NotImplementedException();
+            storage.SaveTasks();
         }
 
         public void Update(model.Task task)
         {
-            throw new NotImplementedException();
+            
         }
     }
 }

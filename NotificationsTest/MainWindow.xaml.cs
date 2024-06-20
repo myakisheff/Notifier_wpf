@@ -2,6 +2,7 @@
 using Notifier.domain.model;
 using Notifier.domain.repository;
 using Notifier.ui;
+using Notifier.utils;
 using System.Drawing;
 using System.IO;
 using System.Windows;
@@ -16,7 +17,8 @@ namespace Notifier
     /// </summary>
     public partial class MainWindow : Window
     {
-        private readonly ITaskRepository taskRepository = new FakeTaskRepositoryImpl();
+        private readonly ITaskRepository taskRepositoryFake = new FakeTaskRepositoryImpl();
+        private readonly ITaskRepository taskRepository = new SSSTaskRepositoryImpl();
         private readonly TaskController taskController = new();
         private readonly TimeController timeController = new();
         private readonly NotifyController notifyController = new();
@@ -61,9 +63,9 @@ namespace Notifier
             InitializeNewTask();
 
             TaskTargetDate.SelectedDate = DateTime.Now;
-            notifyController.Tasks = (List<domain.model.Task>)taskRepository.GetTaskList();
+            notifyController.Tasks = (List<domain.model.Task>)taskRepositoryFake.GetTaskList();
 
-            ListTasks.ItemsSource = taskRepository.GetTaskList();
+            ListTasks.ItemsSource = taskRepositoryFake.GetTaskList();
 
             UpdatePreviewData();
         }
@@ -250,9 +252,12 @@ namespace Notifier
                 return;
             }
 
-            creatingTask.ID = taskRepository.GetTaskList().Any() ? taskRepository.GetTaskList().Last().ID + 1 : 0;
+            creatingTask.ID = taskRepositoryFake.GetTaskList().Any() ? taskRepositoryFake.GetTaskList().Last().ID + 1 : 0;
 
+            taskRepositoryFake.Create(creatingTask);
             taskRepository.Create(creatingTask);
+
+            taskRepository.Save();
 
             InfoTask.Content = (string)Application.Current.FindResource("m_TaskCreationSuccess");
             InfoTask.Foreground = (System.Windows.Media.Brush?)new BrushConverter().ConvertFrom("#10790e");
@@ -268,7 +273,7 @@ namespace Notifier
         {
             List<int> taskIdsToDelete = new(); 
 
-            foreach(var task in taskRepository.GetTaskList())
+            foreach(var task in taskRepositoryFake.GetTaskList())
             {
                 task.TaskTargetDate = task.GetNearestDate().ToString();
                 if(task.GetNearestDate() == null)
@@ -279,7 +284,7 @@ namespace Notifier
 
             foreach (int id in taskIdsToDelete)
             {
-                taskRepository.DeleteById(id);
+                taskRepositoryFake.DeleteById(id);
             }
 
             ListTasks.Items.Refresh();
