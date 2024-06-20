@@ -16,8 +16,6 @@ namespace Notifier
         private readonly TimeController timeController = new();
         private readonly NotifyController notifyController = new();
 
-        private System.Timers.Timer timerListUpdater;
-
         public MainWindow()
         {
             InitializeComponent();
@@ -62,10 +60,7 @@ namespace Notifier
 
             ListTasks.ItemsSource = taskController.GetTaskList();
 
-            timerListUpdater = new();
-            timerListUpdater.Interval = 2000;
-            timerListUpdater.Elapsed += (s, e) => UpdateListTasksData();
-            timerListUpdater.Start();
+            _ = RunPeriodicSave();
 
             UpdatePreviewData();
         }
@@ -259,6 +254,17 @@ namespace Notifier
             UpdateListTasksData();
 
             notifyController.CheckDates();
+        }
+
+        async System.Threading.Tasks.Task RunPeriodicSave()
+        {
+            while (true)
+            {
+                await System.Threading.Tasks.Task.Delay(2500);
+                taskController.UpdateTaskList();
+                ListTasks.ItemsSource = taskController.GetTaskList();
+                ListTasks.Items.Refresh();
+            }
         }
 
         private void UpdateListTasksData()
