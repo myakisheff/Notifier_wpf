@@ -1,7 +1,8 @@
 ﻿using Amazon.S3;
+using Amazon.S3.Model;
 using Amazon.S3.Util;
-using Notifier.domain.model;
 using Notifier.utils;
+using System.IO;
 using System.Windows;
 
 namespace Notifier.domain.entity
@@ -26,35 +27,64 @@ namespace Notifier.domain.entity
             };
             s3client = new(configsS3);
 
+            _ = CheckBucket();
         }
 
-        public void SaveTasks()
+        public async void SaveTasks()
         {
-            
+            TaskJSONManager.Write(Tasks);
+            await SendTasks();
         }
 
-        //public async void SendTasks()
-        //{
-        //    //var response = await s3client.PutObjectAsync();
-        //}
+        public async Task SendTasks()
+        {
+            using (FileStream fstream = new FileStream(TaskJSONManager.GetPath(), FileMode.OpenOrCreate))
+            {
+                var objectRequest = new PutObjectRequest()
+                {
+                    BucketName = BucketName,
+                    Key = "Tasks.json",
+                    InputStream = fstream,
+                };
 
-        //public async Task GetTasks()
-        //{
-            
-        //}
+                await s3client.PutObjectAsync(objectRequest);
+            }
+        }
 
-        //public async Task CheckBucket()
-        //{
-        //    var bucketExists = await AmazonS3Util.DoesS3BucketExistV2Async(s3client, BucketName);
+        public async void GetTasks()
+        {
+            GetObjectResponse res;
+            try
+            {
+                res = await s3client.GetObjectAsync(BucketName, "Tasks.json");
+            }
+            catch (Exception)
+            {
+                return;
+            }
 
-        //    if (!bucketExists)
-        //    {
-        //        IsBucketFound = false;
-        //        MessageBox.Show($"Bucket {BucketName} not found");
-        //    }
-        //    else
-        //        IsBucketFound = true;
-        //}
+            var fileStream = File.Create(TaskJSONManager.GetPath());
+            res.ResponseStream.CopyTo(fileStream);
+            fileStream.Close();
+            res.ResponseStream.Close();
+
+            var loadedTasks = TaskJSONManager.Read();
+
+            Tasks = loadedTasks is null ? Tasks : loadedTasks;
+        }
+
+        public async Task CheckBucket()
+        {
+            var bucketExists = await AmazonS3Util.DoesS3BucketExistV2Async(s3client, BucketName);
+
+            if (!bucketExists)
+            {
+                IsBucketFound = false;
+                MessageBox.Show($"Bucket {BucketName} not found");
+            }
+            else
+                IsBucketFound = true;
+        }
 
     }
 }

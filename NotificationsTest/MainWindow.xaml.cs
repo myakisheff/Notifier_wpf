@@ -1,8 +1,6 @@
 ﻿using Notifier.domain.controller;
 using Notifier.domain.model;
-using Notifier.domain.repository;
 using Notifier.ui;
-using Notifier.utils;
 using System.Drawing;
 using System.IO;
 using System.Windows;
@@ -12,16 +10,13 @@ using System.Windows.Media;
 
 namespace Notifier
 {
-    /// <summary>
-    /// Interaction logic for MainWindow.xaml
-    /// </summary>
     public partial class MainWindow : Window
     {
-        private readonly ITaskRepository taskRepositoryFake = new FakeTaskRepositoryImpl();
-        private readonly ITaskRepository taskRepository = new SSSTaskRepositoryImpl();
         private readonly TaskController taskController = new();
         private readonly TimeController timeController = new();
         private readonly NotifyController notifyController = new();
+
+        private System.Timers.Timer timerListUpdater;
 
         public MainWindow()
         {
@@ -63,9 +58,14 @@ namespace Notifier
             InitializeNewTask();
 
             TaskTargetDate.SelectedDate = DateTime.Now;
-            notifyController.Tasks = (List<domain.model.Task>)taskRepositoryFake.GetTaskList();
+            notifyController.Tasks = taskController.GetTaskList();
 
-            ListTasks.ItemsSource = taskRepositoryFake.GetTaskList();
+            ListTasks.ItemsSource = taskController.GetTaskList();
+
+            timerListUpdater = new();
+            timerListUpdater.Interval = 2000;
+            timerListUpdater.Elapsed += (s, e) => UpdateListTasksData();
+            timerListUpdater.Start();
 
             UpdatePreviewData();
         }
@@ -91,6 +91,8 @@ namespace Notifier
 
         private void BtnRefresh_Click(object sender, RoutedEventArgs e)
         {
+            taskController.RefreshTasks();
+            notifyController.CheckDates();
             UpdateListTasksData();
         }
 
@@ -169,32 +171,24 @@ namespace Notifier
 
         private void TaskTargetDateAddBtn_Click(object sender, RoutedEventArgs e)
         {
-            DateInfo selectedDate = new()
+            if (TaskTargetDate.SelectedDate is null)
             {
-                ID = taskController.GetCreatingTask().TargetDateList.Any() ? taskController.GetCreatingTask().TargetDateList.Last().ID + 1 : 0,
-                Date = TaskTargetDate?.SelectedDate!.Value.ToShortDateString(),
-                Time = timeController.GetTimeString(),
-            };
-
-            foreach(DateInfo tDate in taskController.GetCreatingTask().TargetDateList)
-            {
-                if (tDate.Date == selectedDate.Date && tDate.Time == selectedDate.Time)
-                {
-                    MessageBox.Show((string)Application.Current.FindResource("m_RepeatedDate"));
-                    return;
-                }
-            }
-
-            DateTime choosedDate = DateTime.ParseExact($"{selectedDate.Date} {selectedDate.Time}", "dd.MM.yyyy HH:mm",
-                                       System.Globalization.CultureInfo.InvariantCulture);
-
-            if (choosedDate < DateTime.Now)
-            {
-                MessageBox.Show((string)Application.Current.FindResource("m_WrongDate"));
+                MessageBox.Show((string)Application.Current.FindResource("m_NeedToChooseDate"));
                 return;
             }
 
-            taskController.AddDateToCreatingTask(selectedDate);
+            switch (taskController.AddDateToCreatingTask(TaskTargetDate.SelectedDate.Value.ToShortDateString(), timeController.GetTimeString()))
+            {
+                case DateErrorType.None:
+                    break;
+                case DateErrorType.DateExists:
+                    MessageBox.Show((string)Application.Current.FindResource("m_RepeatedDate"));
+                    break;
+                case DateErrorType.WrongDate:
+                    MessageBox.Show((string)Application.Current.FindResource("m_WrongDate"));
+                    break;
+                    
+            }
 
             UpdatePreviewData();
             TaskTargetDatesList.Items.Refresh();
@@ -213,6 +207,9 @@ namespace Notifier
 
         private void Input_TextChanged(object sender, TextChangedEventArgs e)
         {
+            if (sender is not TextBox)
+                return;
+
             InfoTask.Visibility = Visibility.Hidden;
 
             int txtLength = ((TextBox)sender).Text.Length;
@@ -232,32 +229,27 @@ namespace Notifier
 
         public void UpdatePreviewData()
         {
-            var previewData = new { TaskTitle = TaskTitle.Text, TaskCreationDate = DateTime.Now.ToShortDateString(), TaskDescription = TaskText.Text, TaskTargetDate = taskController.GetCreatingTask()?.GetNearestDate()?.ToString() };
-
-            TaskPreview.DataContext = previewData;
+            TaskPreview.DataContext = new { 
+                TaskTitle = TaskTitle.Text, 
+                TaskCreationDate = DateTime.Now.ToShortDateString(), 
+                TaskDescription = TaskText.Text, 
+                TaskTargetDate = taskController.GetCreatingTask()?.GetNearestDate()?.ToString(),
+            };
         }
         private void TaskAddBtn_Click(object sender, RoutedEventArgs e)
         {
             InfoTask.Visibility = Visibility.Visible;
 
-            taskController.GetCreatingTask().TaskCreationDate = DateTime.Now.ToShortDateString();
             taskController.GetCreatingTask().TaskTitle = TaskTitle.Text;
             taskController.GetCreatingTask().TaskDescription = TaskText.Text;
 
-            domain.model.Task creatingTask = taskController.GetCreatingTask();
-
-            if (String.IsNullOrEmpty(creatingTask.TaskTitle) || creatingTask.TargetDateList == null || creatingTask.TargetDateList.Count == 0)
+            if (!taskController.CreateTask())
             { 
                 WrongTaskData();
                 return;
             }
 
-            creatingTask.ID = taskRepositoryFake.GetTaskList().Any() ? taskRepositoryFake.GetTaskList().Last().ID + 1 : 0;
-
-            taskRepositoryFake.Create(creatingTask);
-            taskRepository.Create(creatingTask);
-
-            taskRepository.Save();
+            taskController.SaveTasks();
 
             InfoTask.Content = (string)Application.Current.FindResource("m_TaskCreationSuccess");
             InfoTask.Foreground = (System.Windows.Media.Brush?)new BrushConverter().ConvertFrom("#10790e");
@@ -271,22 +263,8 @@ namespace Notifier
 
         private void UpdateListTasksData()
         {
-            List<int> taskIdsToDelete = new(); 
-
-            foreach(var task in taskRepositoryFake.GetTaskList())
-            {
-                task.TaskTargetDate = task.GetNearestDate().ToString();
-                if(task.GetNearestDate() == null)
-                {
-                    taskIdsToDelete.Add(task.ID);
-                }
-            }
-
-            foreach (int id in taskIdsToDelete)
-            {
-                taskRepositoryFake.DeleteById(id);
-            }
-
+            taskController.UpdateTaskList();
+            ListTasks.ItemsSource = taskController.GetTaskList();
             ListTasks.Items.Refresh();
         }
 

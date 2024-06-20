@@ -1,6 +1,4 @@
-﻿using Notifier.ui;
-
-namespace Notifier.domain.model
+﻿namespace Notifier.domain.model
 {
     internal class Task
     {

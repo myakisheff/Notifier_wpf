@@ -9,7 +9,7 @@
             TaskList = new();
         }
 
-        public IEnumerable<model.Task> GetTaskList()
+        public List<model.Task> GetTaskList()
         {
             return TaskList;
         }
@@ -45,6 +45,11 @@
         public void Save()
         {
             // Nothing to do, couse it's a fake impl
+        }
+
+        public void Refresh()
+        {
+            // Nothing
         }
     }
 }

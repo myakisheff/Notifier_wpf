@@ -24,6 +24,7 @@
 
     <v:String x:Key="m_WrongDate">Дата должна быть более поздней, чем текущая</v:String>
     <v:String x:Key="m_RepeatedDate">Дата не должна повторяться</v:String>
+    <v:String x:Key="m_NeedToChooseDate">Выберите дату</v:String>
     <v:String x:Key="m_TaskDateHint">Дата</v:String>
 
     <!-- Storage connection -->

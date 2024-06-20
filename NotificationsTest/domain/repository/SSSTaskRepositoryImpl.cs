@@ -6,12 +6,10 @@ namespace Notifier.domain.repository
     {
         private S3TaskContext storage;
 
-        private string accessKey = "YCAJEbcpGsxDG9-feFfWpRoeh";
-        private string secretKey = "YCP0zh1uVdLNZMN0Iwd3iBaEflGfOQzdmIao7cXv";
-
         public SSSTaskRepositoryImpl()
         {
             storage = new();
+            storage.GetTasks();
         }
 
         public void Create(model.Task task)
@@ -21,27 +19,41 @@ namespace Notifier.domain.repository
 
         public void DeleteById(int id)
         {
-            
+            model.Task? task = storage.Tasks.Find(task => task.ID == id);
+            if (task != null)
+            {
+                storage.Tasks.Remove(task);
+            }
         }
 
         public model.Task? GetById(int id)
         {
-            return null;
+            return storage.Tasks.Find(task => task.ID == id);
         }
 
-        public IEnumerable<model.Task> GetTaskList()
+        public List<model.Task> GetTaskList()
         {
             return storage.Tasks;
         }
 
+        public void Refresh()
+        {
+            storage.GetTasks();
+        }
+
         public void Save()
         {
-            storage.SaveTasks();
+            Thread thread = new(storage.SaveTasks);
+            thread.Start();
         }
 
         public void Update(model.Task task)
         {
-            
+            int taskIndex = storage.Tasks.FindIndex(task => task.ID == task.ID);
+            if (taskIndex != -1)
+            {
+                storage.Tasks[taskIndex] = task;
+            }
         }
     }
 }
