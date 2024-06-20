@@ -10,6 +10,7 @@ namespace Notifier
     /// </summary>
     public partial class App : Application
     {
+        static Mutex mutex = new Mutex(true, "{8F6F0AC4-B9A1-45fd-A8CF-72F04E6BDE8F}");
         private static List<CultureInfo> m_Languages = new List<CultureInfo>();
 
         public static List<CultureInfo> Languages
@@ -27,9 +28,18 @@ namespace Notifier
             m_Languages.Add(new CultureInfo("ru-RU"));
         }
 
+
         protected override void OnStartup(StartupEventArgs e)
         {
             base.OnStartup(e);
+
+            bool createdNew;
+            string mutName = "Notifier";
+            mutex = new Mutex(true, mutName, out createdNew);
+            if (!createdNew)
+            {
+                Shutdown();
+            }
 
             ToastNotificationManagerCompat.OnActivated += toastArgs =>
             {
