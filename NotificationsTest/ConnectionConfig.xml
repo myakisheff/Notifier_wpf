@@ -1,0 +1,10 @@
+﻿<?xml version="1.0" encoding="utf-8" ?>
+<Root>
+	<S3Connection>
+		<BucketName>Bucket_name</BucketName>
+		<ServiceURL>Address</ServiceURL>
+		<AuthenticationRegion>Region</AuthenticationRegion>
+		<AccessKey>Access_key</AccessKey>
+		<SecretKey>Secret_key</SecretKey>
+	</S3Connection>
+</Root>
