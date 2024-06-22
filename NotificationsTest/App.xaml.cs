@@ -5,13 +5,9 @@ using Windows.Foundation.Collections;
 
 namespace Notifier
 {
-    /// <summary>
-    /// Interaction logic for App.xaml
-    /// </summary>
     public partial class App : Application
     {
-        static Mutex mutex = new Mutex(true, "{8F6F0AC4-B9A1-45fd-A8CF-72F04E6BDE8F}");
-        private static List<CultureInfo> m_Languages = new List<CultureInfo>();
+        private readonly static List<CultureInfo> m_Languages = new();
 
         public static List<CultureInfo> Languages
         {
@@ -33,9 +29,8 @@ namespace Notifier
         {
             base.OnStartup(e);
 
-            bool createdNew;
             string mutName = "Notifier";
-            mutex = new Mutex(true, mutName, out createdNew);
+            Mutex mutex = new(true, mutName, out bool createdNew);
             if (!createdNew)
             {
                 Shutdown();
@@ -63,6 +58,23 @@ namespace Notifier
             ToastNotificationManagerCompat.Uninstall();
             base.OnExit(e);
         }
+
+        //public void SetAutoload(bool set)
+        //{
+        //    RegistryKey? key = Registry.LocalMachine.OpenSubKey("SOFTWARE\\Microsoft\\Windows\\CurrentVersion\\Run\\", true);
+
+        //    if (key is null) return;
+
+        //    if (set)
+        //    {
+        //        key.SetValue("Notifier", "\"" + AppDomain.CurrentDomain.BaseDirectory + "Notifier.exe" + "\"");
+        //    }
+        //    else
+        //    {
+        //        key.DeleteValue("Notifier", false);
+        //    }
+        //    key.Close();
+        //}
     }
 
 }

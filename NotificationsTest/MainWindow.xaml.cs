@@ -1,12 +1,11 @@
 ﻿using Notifier.domain.controller;
 using Notifier.domain.model;
 using Notifier.ui;
-using System.Drawing;
-using System.IO;
 using System.Windows;
 using System.Windows.Controls;
 using System.Windows.Input;
 using System.Windows.Media;
+using System.Windows.Resources;
 
 namespace Notifier
 {
@@ -21,7 +20,11 @@ namespace Notifier
             InitializeComponent();
 
             tbIcon.TrayLeftMouseDown += TbIcon_TrayLeftMouseDown;
-            tbIcon.Icon = new Icon(Directory.GetParent(Environment.CurrentDirectory)?.Parent?.Parent?.FullName + "\\NotifyAppIcon.ico");
+
+            StreamResourceInfo sri = Application.GetResourceStream(
+                    new Uri("NotifyAppIcon.ico", UriKind.Relative));
+            tbIcon.Icon = new(sri.Stream);
+
             PopupTrayCloseBtn.Click += PopupTrayCloseBtn_Click;
 
             BtnRefresh.Click += BtnRefresh_Click;
@@ -31,6 +34,10 @@ namespace Notifier
             TaskTitle.TextChanged += Input_TextChanged;
             TaskText.TextChanged += Input_TextChanged;
             SwitchTaskBtn.Click += SwitchTaskBtn_Click;
+
+            MouseDown += MainWindow_MouseDown;
+            CloseBtn.Click += CloseBtn_Click;
+
             TaskTargetDateAddBtn.Click += TaskTargetDateAddBtn_Click;
 
             TaskTargetTimeHours.CommandBindings.Add(new CommandBinding(ApplicationCommands.Paste, OnPasteCommand));
@@ -42,9 +49,6 @@ namespace Notifier
             TaskTargetTimeHours.TextChanged += TaskTargetTime_TextChanged;
             TaskTargetTimeMinutes.TextChanged += TaskTargetTime_TextChanged;
 
-            MouseDown += MainWindow_MouseDown;
-            CloseBtn.Click += CloseBtn_Click;
-
             HoursDownBtn.Click += HoursDownBtn_Click;
             HoursUpBtn.Click += HoursUpBtn_Click;
             MinutesDownBtn.Click += MinutesDownBtn_Click;
@@ -53,9 +57,10 @@ namespace Notifier
             TaskTargetDatesList.SelectionChanged += TaskTargetDatesList_SelectionChanged;
             TaskTargetDateDelBtn.Click += TaskTargetDateDelBtn_Click;
 
+            TaskTargetDate.SelectedDate = DateTime.Now;
+
             InitializeNewTask();
 
-            TaskTargetDate.SelectedDate = DateTime.Now;
             notifyController.Tasks = taskController.GetTaskList();
 
             ListTasks.ItemsSource = taskController.GetTaskList();
@@ -87,7 +92,7 @@ namespace Notifier
         private void BtnRefresh_Click(object sender, RoutedEventArgs e)
         {
             taskController.RefreshTasks();
-            notifyController.CheckDates();
+            notifyController.Tasks = taskController.GetTaskList();
             UpdateListTasksData();
         }
 
@@ -239,8 +244,10 @@ namespace Notifier
             taskController.GetCreatingTask().TaskDescription = TaskText.Text;
 
             if (!taskController.CreateTask())
-            { 
-                WrongTaskData();
+            {
+                var bc = new BrushConverter();
+                InfoTask.Content = (string)Application.Current.FindResource("m_TaskCreationWrong");
+                InfoTask.Foreground = (System.Windows.Media.Brush?)bc.ConvertFrom("#b91316");
                 return;
             }
 
@@ -253,7 +260,7 @@ namespace Notifier
             UpdatePreviewData();
             UpdateListTasksData();
 
-            notifyController.CheckDates();
+            notifyController.Tasks = taskController.GetTaskList();
         }
 
         async System.Threading.Tasks.Task RunPeriodicSave()
@@ -272,13 +279,6 @@ namespace Notifier
             taskController.UpdateTaskList();
             ListTasks.ItemsSource = taskController.GetTaskList();
             ListTasks.Items.Refresh();
-        }
-
-        private void WrongTaskData()
-        {
-            var bc = new BrushConverter();
-            InfoTask.Content = (string)Application.Current.FindResource("m_TaskCreationWrong");
-            InfoTask.Foreground = (System.Windows.Media.Brush?)bc.ConvertFrom("#b91316");
         }
 
         // Task List section

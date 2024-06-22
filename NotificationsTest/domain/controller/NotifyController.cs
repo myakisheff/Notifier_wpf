@@ -64,7 +64,7 @@ namespace Notifier.domain.controller
             CheckDates();
         }
 
-        public void CheckDates()
+        private void CheckDates()
         {
             if (tasks == null)
                 return;

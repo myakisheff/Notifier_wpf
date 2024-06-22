@@ -8,6 +8,7 @@
     <UseWPF>true</UseWPF>
     <ApplicationIcon>NotifyAppIcon.ico</ApplicationIcon>
     <NeutralLanguage>en</NeutralLanguage>
+    <ApplicationManifest>app.manifest</ApplicationManifest>
   </PropertyGroup>
 
   <ItemGroup>
@@ -16,13 +17,23 @@
     <None Remove="assets\icons\ic_CalendarPas.png" />
     <None Remove="assets\icons\white_settings-64x64.png" />
     <None Remove="assets\watermarks\textboxtime.png" />
+    <None Remove="ConnectionConfig.xml" />
   </ItemGroup>
 
   <ItemGroup>
-    <Resource Include="assets\icons\ic_CalendarAct.png" />
-    <Resource Include="assets\icons\ic_CalendarPas.png" />
-    <Resource Include="assets\icons\white_settings-64x64.png" />
-    <Resource Include="assets\watermarks\textboxtime.png" />
+    <Resource Include="assets\icons\ic_CalendarAct.png">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Resource>
+    <Resource Include="assets\icons\ic_CalendarPas.png">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Resource>
+    <Resource Include="assets\icons\white_settings-64x64.png">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Resource>
+    <Resource Include="assets\watermarks\textboxtime.png">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Resource>
+    <Resource Include="ConnectionConfig.xml" />
     <Resource Include="NotifyAppIcon.ico" />
   </ItemGroup>
 
@@ -36,7 +47,7 @@
 
   <ItemGroup>
     <Resource Include="assets\cursors\cursor.cur">
-      <CopyToOutputDirectory>Never</CopyToOutputDirectory>
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </Resource>
   </ItemGroup>
 

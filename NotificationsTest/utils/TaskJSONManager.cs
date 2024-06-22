@@ -1,11 +1,12 @@
 ﻿using Newtonsoft.Json;
 using System.IO;
+using System.Windows;
 
 namespace Notifier.utils
 {
     internal class TaskJSONManager
     {
-        private static readonly string path = "Tasks.json";
+        private static readonly string path = Environment.GetFolderPath(Environment.SpecialFolder.ApplicationData) + "//Tasks.json";
 
         public static void Write(List<domain.model.Task> tasks)
         {
@@ -15,8 +16,18 @@ namespace Notifier.utils
 
         public static List<domain.model.Task>? Read()
         {
-            string objects = File.ReadAllText(path);
-            return JsonConvert.DeserializeObject<List<domain.model.Task>>(objects);
+            string text;
+            try
+            {
+                text = File.ReadAllText(path);
+            }
+            catch (Exception ex)
+            {
+                MessageBox.Show(ex.Message, "Error", MessageBoxButton.OK, MessageBoxImage.Error);
+                text = "";
+            }
+
+            return JsonConvert.DeserializeObject<List<domain.model.Task>>(text);
         }
 
         public static string GetPath() => path;

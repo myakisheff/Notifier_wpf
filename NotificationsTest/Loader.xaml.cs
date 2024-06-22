@@ -1,9 +1,9 @@
 ﻿using System.ComponentModel;
-using System.IO;
 using System.Windows;
 using System.Windows.Controls;
 using System.Windows.Input;
 using System.Windows.Media.Animation;
+using System.Windows.Resources;
 
 namespace Notifier
 {
@@ -27,12 +27,15 @@ namespace Notifier
         public Loader()
         {
             InitializeComponent();
+
             DataContext = this;
 
             UIWindow.MouseDown += Loader_MouseDown;
 
-            string cursorDirectory = Directory.GetParent(Environment.CurrentDirectory)?.Parent?.Parent?.FullName + "\\assets\\cursors";
-            UIWindow.Cursor = new Cursor($"{cursorDirectory}\\cursor.cur");
+            StreamResourceInfo sri = Application.GetResourceStream(
+                new Uri("assets/cursors/cursor.cur", UriKind.Relative));
+            Cursor customCursor = new(sri.Stream);
+            UIWindow.Cursor = customCursor;
 
             CloseBtn.Click += Loader_CloseBtn;
 
@@ -43,9 +46,8 @@ namespace Notifier
         {
             var uri = new Uri("resourceDictionaries/themes/DarkTheme.xaml", UriKind.Relative);
 
-            ResourceDictionary? resourceDict = Application.LoadComponent(uri) as ResourceDictionary;
 
-            if (resourceDict == null)
+            if (Application.LoadComponent(uri) is not ResourceDictionary resourceDict)
                 return;
 
             Application.Current.Resources.Clear();
