@@ -15,7 +15,12 @@ The configuration file is located in the root directory ```ConnectionConfig.xml`
 </S3Connection>
 ```
 ```BucketName``` - The name of your existing bucket in object storage
+
 ```ServiceURL``` - Host for connecting to object storage
+
 ```AuthenticationRegion``` - Authentication region of your host
+
 ```AccessKey``` - Access key from a service account with access to object storage
+
 ```SecretKey``` - Secret key from a service account with access to object storage
+
