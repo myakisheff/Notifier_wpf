@@ -4,7 +4,7 @@ namespace Notifier.domain.repository
 {
     internal class SSSTaskRepositoryImpl : ITaskRepository
     {
-        private S3TaskContext storage;
+        private readonly S3TaskContext storage;
 
         public SSSTaskRepositoryImpl()
         {

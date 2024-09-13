@@ -65,7 +65,8 @@ namespace Notifier
 
             ListTasks.ItemsSource = taskController.GetTaskList();
 
-            _ = RunPeriodicSave();
+            _ = RunPeriodicTaskSave();
+            _ = RunPeriodicTaskGet();
 
             UpdatePreviewData();
         }
@@ -263,17 +264,6 @@ namespace Notifier
             notifyController.Tasks = taskController.GetTaskList();
         }
 
-        async System.Threading.Tasks.Task RunPeriodicSave()
-        {
-            while (true)
-            {
-                await System.Threading.Tasks.Task.Delay(2500);
-                taskController.UpdateTaskList();
-                ListTasks.ItemsSource = taskController.GetTaskList();
-                ListTasks.Items.Refresh();
-            }
-        }
-
         private void UpdateListTasksData()
         {
             taskController.UpdateTaskList();
@@ -337,6 +327,26 @@ namespace Notifier
         public void OnPasteCommand(object sender, ExecutedRoutedEventArgs e)
         {
             // Do nothing (for restricting paste)
+        }
+
+        private async System.Threading.Tasks.Task RunPeriodicTaskGet()
+        {
+            while (true)
+            {
+                await System.Threading.Tasks.Task.Delay(900000); // 15 minutes
+                taskController.RefreshTasks();
+            }
+        }
+
+        private async System.Threading.Tasks.Task RunPeriodicTaskSave()
+        {
+            while (true)
+            {
+                await System.Threading.Tasks.Task.Delay(2500);
+                taskController.UpdateTaskList();
+                ListTasks.ItemsSource = taskController.GetTaskList();
+                ListTasks.Items.Refresh();
+            }
         }
     }
 }
